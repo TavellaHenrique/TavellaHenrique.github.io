@@ -1,11 +1,114 @@
 {% extends "base.html" %}
 
-{% block title %}Home | Portfolio{% endblock %}
-
 {% block content %}
-<section>
-    <h1>Hello, I'm a Developer!!!</h1>
-    <p>Welcome to my personal portfolio.</p>
-    <a href="{{ url_for('main.projects') }}">Explore my projects</a>
+<section id="home" class="hero section-container">
+    <span class="handwritten-note">{{ content.hero.greeting }}</span>
+
+    <h1>{{ content.hero.name }}</h1>
+
+    <h2>{{ content.hero.role }}</h2>
+
+    <p class="hero-description">
+        {{ content.hero.description }}
+    </p>
+</section>
+
+<section id="projects" class="content-section section-container">
+    <h2>{{ content.sections.projects }}</h2>
+
+    <article class="project-card">
+        <span class="project-number">01</span>
+
+        <h3>{{ content.project.name }}</h3>
+
+        <p>{{ content.project.description }}</p>
+
+        <h4>{{ content.project.objective }}</h4>
+        <p>{{ content.project.objective_description }}</p>
+
+        <div class="technology-list">
+            <span>Python</span>
+            <span>Pygame</span>
+        </div>
+
+        <a
+            href="https://github.com/TavellaHenrique/PongByAllevat"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            {{ content.project.repository }} ↗
+        </a>
+    </article>
+</section>
+
+<section id="skills" class="content-section section-container">
+    <h2>{{ content.sections.skills }}</h2>
+
+    <div class="skills-grid">
+        <article class="skill-card">
+            <h3>Web Development</h3>
+            <p>HTML · CSS · JavaScript · PHP</p>
+        </article>
+
+        <article class="skill-card">
+            <h3>Desktop Development</h3>
+            <p>Java · Python · C#</p>
+        </article>
+
+        <article class="skill-card">
+            <h3>Mobile Development</h3>
+            <p>Java · Kotlin · Dart · Flutter</p>
+        </article>
+
+        <article class="skill-card">
+            <h3>Databases</h3>
+            <p>MySQL · SQLite</p>
+        </article>
+
+        <article class="skill-card">
+            <h3>Tools</h3>
+            <p>Git · GitHub · VS Code</p>
+        </article>
+    </div>
+</section>
+
+<section id="about" class="content-section section-container">
+    <h2>{{ content.sections.about }}</h2>
+
+    <p>{{ content.about.full_name }}</p>
+    <p>{{ content.about.course }}</p>
+    <p>{{ content.about.institution }}</p>
+    <p>{{ content.about.location }}</p>
+    <p>{{ content.about.graduation }}</p>
+</section>
+
+<section id="contact" class="content-section section-container">
+    <h2>{{ content.sections.contact }}</h2>
+
+    <ul class="contact-list">
+        <li>
+            <a href="mailto:henriquetavella0@gmail.com">
+                Email
+            </a>
+        </li>
+        <li>
+            <a
+                href="https://github.com/TavellaHenrique/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                GitHub
+            </a>
+        </li>
+        <li>
+            <a
+                href="https://www.linkedin.com/in/tavellahenrique/"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                LinkedIn
+            </a>
+        </li>
+    </ul>
 </section>
 {% endblock %}

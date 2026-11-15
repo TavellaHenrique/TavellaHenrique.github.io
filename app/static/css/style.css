@@ -1,0 +1,253 @@
+/* Define the initial light theme and shared design tokens. */
+:root {
+    color-scheme: light;
+    --background: #f5f0e6;
+    --surface: #fffdf7;
+    --foreground: #292820;
+    --muted: #777264;
+    --accent: #bd573d;
+    --border: #38352e;
+    --shadow: 4px 4px 0 var(--border);
+}
+
+/* Override the design tokens for dark mode. */
+[data-theme="dark"] {
+    color-scheme: dark;
+    --background: #242522;
+    --surface: #30312d;
+    --foreground: #f2eddf;
+    --muted: #b4ad9c;
+    --accent: #e58b70;
+    --border: #e0d8c8;
+    --shadow: 4px 4px 0 var(--border);
+}
+
+/* Apply consistent box sizing and document defaults. */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: "Courier New", monospace;
+    line-height: 1.7;
+    transition: background 0.2s, color 0.2s;
+}
+
+/* Keep the header visible while navigating the page. */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px 6%;
+    background: var(--background);
+    border-bottom: 2px solid var(--border);
+}
+
+.logo {
+    color: var(--foreground);
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo span {
+    color: var(--accent);
+}
+
+.main-navigation,
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.main-navigation a,
+.language-toggle {
+    color: var(--foreground);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.main-navigation a:hover,
+.language-toggle:hover {
+    color: var(--accent);
+}
+
+.theme-toggle {
+    width: 38px;
+    height: 38px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--foreground);
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+/* Establish consistent spacing for all page sections. */
+.section-container {
+    width: min(1100px, 88%);
+    margin: 0 auto;
+}
+
+.hero {
+    min-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+.handwritten-note,
+.signature {
+    color: var(--accent);
+    font-style: italic;
+}
+
+.hero h1 {
+    margin: 8px 0;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    line-height: 1.15;
+}
+
+.hero h2 {
+    max-width: 700px;
+    color: var(--muted);
+    font-size: clamp(1rem, 2vw, 1.4rem);
+    font-weight: normal;
+}
+
+.hero-description {
+    max-width: 680px;
+}
+
+.signature {
+    align-self: flex-end;
+    margin-top: 24px;
+    font-size: 1.2rem;
+}
+
+.content-section {
+    padding-top: 70px;
+    padding-bottom: 70px;
+    scroll-margin-top: 90px;
+}
+
+.content-section > h2 {
+    display: inline-block;
+    margin-bottom: 30px;
+    border-bottom: 3px solid var(--accent);
+}
+
+.project-card,
+.skill-card {
+    padding: 24px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.project-card {
+    max-width: 700px;
+    transform: rotate(-0.5deg);
+}
+
+.project-number {
+    color: var(--accent);
+}
+
+.project-card a {
+    color: var(--accent);
+}
+
+.technology-list,
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.technology-list {
+    margin: 20px 0;
+}
+
+.technology-list span {
+    padding: 4px 10px;
+    border: 1px dashed var(--border);
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.skill-card {
+    box-shadow: 3px 3px 0 var(--border);
+}
+
+.contact-list {
+    padding-left: 20px;
+}
+
+.contact-list a {
+    color: var(--accent);
+}
+
+.site-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 6%;
+    border-top: 2px solid var(--border);
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+/* Adapt the layout for smaller screens. */
+@media (max-width: 760px) {
+    .site-header {
+        flex-wrap: wrap;
+    }
+
+    .main-navigation {
+        order: 3;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .main-navigation a {
+        font-size: 0.75rem;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+    }
+}

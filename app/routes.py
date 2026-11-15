@@ -1,27 +1,17 @@
 from flask import Blueprint, render_template
 
+from app.content import CONTENT
+
 main = Blueprint("main", __name__)
 
 
 @main.route("/")
 def index():
-    """Render the homepage."""
-    return render_template("index.html")
+    """Render the English homepage."""
+    return render_template("index.html", content=CONTENT["en"])
 
 
-@main.route("/projects/")
-def projects():
-    """Render the projects page."""
-    return render_template("projects.html")
-
-
-@main.route("/about/")
-def about():
-    """Render the about page."""
-    return render_template("about.html")
-
-
-@main.route("/contact/")
-def contact():
-    """Render the contact page."""
-    return render_template("contact.html")
+@main.route("/pt-br/")
+def index_pt_br():
+    """Render the Brazilian Portuguese homepage."""
+    return render_template("index.html", content=CONTENT["pt-br"])
