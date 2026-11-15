@@ -19,20 +19,11 @@
 
         <div class="hero-actions">
             <a class="primary-link" href="#projects">
-                {% if content.language == "en" %}
-                    Explore my projects
-                {% else %}
-                    Conheça meus projetos
-                {% endif %}
-                <span aria-hidden="true">↗</span>
+                {{ content.hero.projects_link }}
             </a>
 
             <a class="secondary-link" href="#contact">
-                {% if content.language == "en" %}
-                    Get in touch
-                {% else %}
-                    Entre em contato
-                {% endif %}
+                {{ content.hero.contact_link }}
             </a>
         </div>
     </div>
@@ -61,20 +52,21 @@
                    C284 65 315 115 296 163"
             />
 
-            <!-- Draw a light bulb. -->
-            <path
-                class="sketch-accent"
-                d="M176 83 C147 83 128 104 128 131
-                   C128 150 140 164 153 176
-                   L158 195 L194 195 L200 176
-                   C214 162 224 148 224 130
-                   C224 103 203 83 176 83Z"
-            />
+            <g transform="translate(176 148) scale(0.86) translate(-176 -148)">
+                <path
+                    class="sketch-accent"
+                    d="M176 83 C147 83 128 104 128 131
+                       C128 150 140 164 153 176
+                       L158 195 L194 195 L200 176
+                       C214 162 224 148 224 130
+                       C224 103 203 83 176 83Z"
+                />
 
-            <path
-                class="sketch-line"
-                d="M158 203 L196 203 M162 213 L192 213"
-            />
+                <path
+                    class="sketch-line"
+                    d="M158 203 L196 203 M162 213 L192 213"
+                />
+            </g>
 
             <!-- Draw light rays. -->
             <path
@@ -84,42 +76,36 @@
                    M242 132 L261 132"
             />
 
-            <!-- Add a small technical diagram. -->
+            <!-- Connect a person to the resulting mobile app. -->
+            <circle class="sketch-line" cx="88" cy="282" r="10"/>
             <path
                 class="sketch-line"
-                d="M64 287 L147 287 L147 326
-                   L64 326 Z M147 306 L207 306
-                   M207 306 L207 267 L257 267"
+                d="M66 321 C67 305 75 296 88 296
+                   C101 296 109 305 110 321
+                   M118 307 L174 307 L174 267 L207 267"
             />
 
             <path
                 class="sketch-accent"
-                d="M250 260 L260 267 L250 274"
+                d="M201 260 L211 267 L201 274"
             />
 
-            <!-- Add handwritten-style decorative marks. -->
             <path
-                class="sketch-line sketch-secondary"
-                d="M303 252 C323 242 344 245 354 258
-                   M309 266 C329 257 342 260 351 271"
+                class="sketch-line"
+                d="M214 246 C214 243 216 241 219 241
+                   L239 241 C242 241 244 243 244 246
+                   L244 288 C244 291 242 293 239 293
+                   L219 293 C216 293 214 291 214 288Z
+                   M223 247 L235 247"
             />
+            <circle class="sketch-dot" cx="229" cy="286" r="1.5"/>
 
             <circle class="sketch-dot" cx="71" cy="48" r="4"/>
             <circle class="sketch-dot" cx="338" cy="102" r="5"/>
             <circle class="sketch-dot" cx="294" cy="316" r="4"/>
-
-            <text class="sketch-label" x="65" y="350">
-                IDEA → IMPLEMENTATION
-            </text>
         </svg>
 
-        <span class="illustration-note">
-            {% if content.language == "en" %}
-                From thought to reality
-            {% else %}
-                Da ideia à realidade
-            {% endif %}
-        </span>
+        <span class="illustration-note">{{ content.hero.illustration_note }}</span>
     </div>
 </section>
 
@@ -127,27 +113,53 @@
     <h2>{{ content.sections.projects }}</h2>
 
     <article class="project-card">
-        <span class="project-number">01</span>
+        <header class="project-card-header">
+            <span class="project-number">01</span>
+            <div>
+                <span class="project-kicker">{{ content.project.kicker }}</span>
+                <h3>{{ content.project.name }}</h3>
+                <p>{{ content.project.description }}</p>
+            </div>
+        </header>
 
-        <h3>{{ content.project.name }}</h3>
+        <figure class="project-preview">
+            <img
+                src="{{ url_for('static', filename='images/pong-by-allevat.svg') }}"
+                alt="{{ content.project.image_alt }}"
+                loading="lazy"
+            >
+            <figcaption>{{ content.project.image_caption }}</figcaption>
+        </figure>
 
-        <p>{{ content.project.description }}</p>
+        <div class="project-details">
+            <section class="project-detail">
+                <h4>{{ content.project.objective }}</h4>
+                <p>{{ content.project.objective_description }}</p>
+            </section>
 
-        <h4>{{ content.project.objective }}</h4>
-        <p>{{ content.project.objective_description }}</p>
+            <section class="project-detail">
+                <h4>{{ content.project.features_title }}</h4>
+                <ul class="project-feature-list">{% for feature in content.project.features %}
+                        <li>{{ feature }}</li>
+{% endfor %}</ul>
+            </section>
 
-        <div class="technology-list">
-            <span>Python</span>
-            <span>Pygame</span>
+            <section class="project-detail">
+                <h4>{{ content.project.technology_title }}</h4>
+                <div class="technology-list">{% for technology in content.project.technologies %}
+                        <span>{{ technology }}</span>
+{% endfor %}</div>
+            </section>
+
+            <a
+                class="project-repository"
+                href="https://github.com/TavellaHenrique/PongByAllevat"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                {{ content.project.repository }} ↗
+            </a>
         </div>
-
-        <a
-            href="https://github.com/TavellaHenrique/PongByAllevat"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            {{ content.project.repository }} ↗
-        </a>
     </article>
 </section>
 
@@ -156,27 +168,56 @@
 
     <div class="skills-grid">
         <article class="skill-card">
-            <h3>Web Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="4" width="18" height="16" rx="2"/>
+                    <path d="M3 9h18M7 6.5h.01M10 6.5h.01M8 13l-2 2 2 2m4 0h4"/>
+                </svg>
+                Web Development
+            </h3>
             <p>HTML · CSS · JavaScript · PHP</p>
         </article>
 
         <article class="skill-card">
-            <h3>Desktop Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="3" width="18" height="14" rx="2"/>
+                    <path d="M8 21h8m-4-4v4M8 8l2 2-2 2m5 0h3"/>
+                </svg>
+                Desktop Development
+            </h3>
             <p>Java · Python · C#</p>
         </article>
 
         <article class="skill-card">
-            <h3>Mobile Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="7" y="2" width="10" height="20" rx="2"/>
+                    <path d="M11 5h2m-2 14h2"/>
+                </svg>
+                Mobile Development
+            </h3>
             <p>Java · Kotlin · Dart · Flutter</p>
         </article>
 
         <article class="skill-card">
-            <h3>Databases</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <ellipse cx="12" cy="5" rx="8" ry="3"/>
+                    <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+                </svg>
+                Databases
+            </h3>
             <p>MySQL · SQLite</p>
         </article>
 
         <article class="skill-card">
-            <h3>Tools</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3 9h18v12H3zM8 9V5h8v4M3 14h18m-8 0v3h-4v-3"/>
+                </svg>
+                Tools
+            </h3>
             <p>Git · GitHub · VS Code</p>
         </article>
     </div>

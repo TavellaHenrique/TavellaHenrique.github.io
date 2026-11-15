@@ -3,6 +3,7 @@ CONTENT = {
         "language": "en",
         "language_name": "English",
         "alternate_language": "PT-BR",
+        "language_toggle_endpoint": "main.index_pt_br",
         "navigation": {
             "home": "Home",
             "projects": "Projects",
@@ -20,6 +21,9 @@ CONTENT = {
                 "to help people by giving their ideas the opportunity "
                 "to become something real."
             ),
+            "projects_link": "Explore my projects",
+            "contact_link": "Get in touch",
+            "illustration_note": "From thought to reality",
         },
         "sections": {
             "projects": "Projects",
@@ -29,6 +33,7 @@ CONTENT = {
         },
         "project": {
             "name": "Pong By Allevat",
+            "kicker": "Local multiplayer · Player vs. CPU",
             "description": (
                 "A reproduction of the classic Pong game, developed "
                 "to explore the Pygame module through a familiar "
@@ -38,7 +43,34 @@ CONTENT = {
             "objective_description": (
                 "Explore Pygame by reproducing a well-known game."
             ),
-            "repository": "View repository",
+            "features_title": "Implemented features",
+            "features": [
+                "Local matches for two players or against the computer",
+                "Selectable visual themes",
+                "Adjustable score target",
+                "Ball speed increases during a match",
+            ],
+            "technology_title": "Technologies",
+            "technologies": ["Python 3.12", "Pygame"],
+            "image_alt": (
+                "Illustration of a Pong match with two paddles, a ball, "
+                "and a score of 3 to 2."
+            ),
+            "image_caption": (
+                "Illustrative gameplay preview · Classic theme"
+            ),
+            "repository": "View source on GitHub",
+        },
+        "contact": {
+            "heading": "Let's connect.",
+            "description": (
+                "Have a project, an idea or an opportunity in mind? "
+                "Feel free to reach out."
+            ),
+            "email": "Send me an email",
+            "github": "Explore my repositories",
+            "linkedin": "Connect professionally",
+            "closing": "Every great project starts with a conversation.",
         },
         "about": {
             "full_name": "Henrique Ribeiro da Cunha Tavella",
@@ -53,6 +85,7 @@ CONTENT = {
         "language": "pt-BR",
         "language_name": "Português",
         "alternate_language": "EN",
+        "language_toggle_endpoint": "main.index",
         "navigation": {
             "home": "Início",
             "projects": "Projetos",
@@ -72,6 +105,9 @@ CONTENT = {
                 "caminho: uma forma de ajudar pessoas, dando às suas ideias "
                 "a oportunidade de se tornarem realidade."
             ),
+            "projects_link": "Conheça meus projetos",
+            "contact_link": "Entre em contato",
+            "illustration_note": "Da ideia à realidade",
         },
         "sections": {
             "projects": "Projetos",
@@ -81,6 +117,7 @@ CONTENT = {
         },
         "project": {
             "name": "Pong By Allevat",
+            "kicker": "Multiplayer local · Jogador vs. computador",
             "description": (
                 "Uma reprodução do clássico jogo Pong, desenvolvida "
                 "para explorar o módulo Pygame por meio de um projeto "
@@ -90,7 +127,34 @@ CONTENT = {
             "objective_description": (
                 "Explorar o Pygame reproduzindo um jogo conhecido."
             ),
-            "repository": "Ver repositório",
+            "features_title": "Funcionalidades implementadas",
+            "features": [
+                "Partidas locais para dois jogadores ou contra o computador",
+                "Temas visuais selecionáveis",
+                "Pontuação-alvo ajustável",
+                "A bola acelera ao longo da partida",
+            ],
+            "technology_title": "Tecnologias",
+            "technologies": ["Python 3.12", "Pygame"],
+            "image_alt": (
+                "Ilustração de uma partida de Pong com duas raquetes, "
+                "uma bola e placar de 3 a 2."
+            ),
+            "image_caption": (
+                "Prévia ilustrativa da partida · tema Clássico"
+            ),
+            "repository": "Ver código no GitHub",
+        },
+        "contact": {
+            "heading": "Vamos conversar.",
+            "description": (
+                "Tem um projeto, uma ideia ou uma oportunidade em mente? "
+                "Fique à vontade para entrar em contato."
+            ),
+            "email": "Envie um e-mail",
+            "github": "Explore meus repositórios",
+            "linkedin": "Conecte-se profissionalmente",
+            "closing": "Todo grande projeto começa com uma conversa.",
         },
         "about": {
             "full_name": "Henrique Ribeiro da Cunha Tavella",

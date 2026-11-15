@@ -4,10 +4,17 @@
     --background: #f5f0e6;
     --surface: #fffdf7;
     --foreground: #292820;
-    --muted: #777264;
+    --muted: #6d685d;
     --accent: #bd573d;
     --border: #38352e;
     --shadow: 4px 4px 0 var(--border);
+    --button-foreground: #111110;
+    --board-frame: #c9c9c5;
+    --board-shadow: #8f8e87;
+    --skill-note: #fff1a8;
+    --skill-note-fold: #e7d77f;
+    --skill-note-shadow: #baab57;
+    --skill-note-ink: #302d1f;
 }
 
 /* Override the design tokens for dark mode. */
@@ -20,6 +27,12 @@
     --accent: #e58b70;
     --border: #e0d8c8;
     --shadow: 4px 4px 0 var(--border);
+    --board-frame: #555750;
+    --board-shadow: #141512;
+    --skill-note: #e7d98f;
+    --skill-note-fold: #d1be69;
+    --skill-note-shadow: #10110e;
+    --skill-note-ink: #292820;
 }
 
 /* Apply consistent box sizing and document defaults. */
@@ -79,20 +92,50 @@ body {
     text-decoration: none;
 }
 
+.main-navigation a {
+    position: relative;
+    z-index: 0;
+    display: inline-block;
+    isolation: isolate;
+}
+
+.main-navigation a::after {
+    position: absolute;
+    z-index: -1;
+    inset: -5px -9px;
+    border: 1.5px solid var(--accent);
+    border-radius: 47% 53% 61% 39% / 54% 42% 58% 46%;
+    content: "";
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.92);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.main-navigation a:hover::after,
+.main-navigation a:focus-visible::after {
+    opacity: 1;
+    transform: rotate(2deg) scale(1);
+}
+
 .main-navigation a:hover,
 .language-toggle:hover {
     color: var(--accent);
 }
 
 .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 38px;
     height: 38px;
+    padding: 0;
     border: 2px solid var(--border);
     border-radius: 50%;
     background: var(--surface);
     color: var(--foreground);
     cursor: pointer;
     font-size: 1.2rem;
+    line-height: 1;
 }
 
 /* Establish consistent spacing for all page sections. */
@@ -114,7 +157,6 @@ body {
 .handwritten-note,
 .signature {
     color: var(--accent);
-    font-style: italic;
 }
 
 .hero h1 {
@@ -161,16 +203,132 @@ body {
 }
 
 .project-card {
-    max-width: 700px;
-    transform: rotate(-0.5deg);
+    max-width: 980px;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 28px;
+    padding: clamp(20px, 4vw, 36px);
+    border: 8px solid var(--board-frame);
+    border-radius: 12px 15px 11px 14px;
+    box-shadow: 0 7px 0 var(--board-shadow), 0 13px 22px rgb(41 40 32 / 12%);
 }
 
 .project-number {
+    display: grid;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border: 1.5px solid var(--accent);
+    border-radius: 48% 52% 43% 57% / 56% 44% 56% 44%;
     color: var(--accent);
+    font-family: var(--font-mono);
+}
+
+.project-card-header {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.project-kicker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.project-card-header h3 {
+    margin: 4px 0 8px;
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    line-height: 1.1;
+}
+
+.project-card-header p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--muted);
+}
+
+.project-preview {
+    align-self: start;
+    margin: 4px 0 0;
+    padding: 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px 8px 4px 7px;
+    background: var(--background);
+}
+
+.project-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+}
+
+.project-preview figcaption {
+    margin-top: 8px;
+    color: var(--muted);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    text-align: right;
+}
+
+.project-details {
+    display: grid;
+    align-content: start;
+    gap: 20px;
+}
+
+.project-detail h4 {
+    margin: 0 0 6px;
+    font-size: 0.95rem;
+}
+
+.project-detail p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.project-feature-list {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 20px;
+    font-size: 0.9rem;
+}
+
+.project-feature-list li::marker {
+    color: var(--accent);
+}
+
+.project-detail .technology-list {
+    gap: 8px;
+    margin: 0;
 }
 
 .project-card a {
     color: var(--accent);
+}
+
+.project-repository {
+    justify-self: start;
+    padding: 8px 12px;
+    border: 1.5px solid var(--accent);
+    border-radius: 4px 7px 3px 6px;
+    font-size: 0.88rem;
+    text-decoration: none;
+}
+
+.project-repository:hover {
+    background: var(--accent);
+    color: var(--button-foreground);
 }
 
 .technology-list,
@@ -186,7 +344,8 @@ body {
 
 .technology-list span {
     padding: 4px 10px;
-    border: 1px dashed var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px 6px 3px 5px;
 }
 
 .skills-grid {
@@ -195,7 +354,48 @@ body {
 }
 
 .skill-card {
-    box-shadow: 3px 3px 0 var(--border);
+    position: relative;
+    padding: 24px;
+    border: 0;
+    border-radius: 3px 5px 4px 2px;
+    background: var(--skill-note);
+    color: var(--skill-note-ink);
+    box-shadow: 4px 5px 0 var(--skill-note-shadow);
+}
+
+.skill-card::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 26px;
+    height: 26px;
+    background: linear-gradient(
+        135deg,
+        var(--skill-note-fold) 0 48%,
+        var(--skill-note-shadow) 49% 53%,
+        var(--skill-note) 54%
+    );
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+    content: "";
+}
+
+.skill-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 14px;
+}
+
+.skill-card p {
+    margin: 0;
+    color: inherit;
+}
+
+.skill-icon {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 auto;
+    color: var(--skill-note-ink);
 }
 
 .contact-list {
@@ -208,12 +408,18 @@ body {
 
 .site-footer {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 20px;
     padding: 24px 6%;
     border-top: 2px solid var(--border);
     color: var(--muted);
     font-size: 0.8rem;
+}
+
+.site-footer span {
+    margin-left: auto;
+    text-align: right;
 }
 
 /* Adapt the layout for smaller screens. */
@@ -235,7 +441,14 @@ body {
 
     .site-footer {
         flex-direction: column;
+        align-items: stretch;
         gap: 4px;
+    }
+
+    .site-footer span {
+        align-self: center;
+        margin-left: 0;
+        text-align: center;
     }
 }
 
@@ -291,8 +504,7 @@ body {
 
 /* Give project cards a hand-drawn appearance. */
 .project-card {
-    border-radius: 3px 7px 4px 9px;
-    transform: rotate(-0.4deg);
+    border-radius: 12px 15px 11px 14px;
 }
 
 /* Create slight variations between skill cards. */
@@ -326,5 +538,207 @@ body {
     .project-card,
     .skill-card {
         transform: none;
+    }
+
+    .project-card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .project-card-header {
+        grid-column: auto;
+        gap: 12px;
+    }
+
+    .project-preview {
+        max-width: 520px;
+        width: 100%;
+        margin: 0 auto;
+        transform: none;
+    }
+
+    .project-repository {
+        justify-self: stretch;
+        text-align: center;
+    }
+}
+
+/* Arrange the hero content and illustration side by side. */
+.hero {
+    min-height: 82vh;
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    align-items: center;
+    gap: 20px;
+    padding-top: 50px;
+    padding-bottom: 70px;
+}
+
+/* Keep the textual content above decorative elements. */
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.handwritten-note {
+    display: inline-block;
+    color: var(--accent);
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.hero-greeting {
+    margin-bottom: 0;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+}
+
+.hero h1 {
+    margin: 8px 0 32px;
+    font-size: clamp(3.5rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.07em;
+}
+
+.hero h1 span {
+    color: var(--accent);
+}
+
+.hero h2 {
+    max-width: 600px;
+    margin: 0 0 2px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.hero-description {
+    max-width: 600px;
+    margin-top: 0px;
+    line-height: 1.9;
+}
+
+/* Style the hero navigation links. */
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.primary-link,
+.secondary-link {
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.primary-link {
+    padding: 12px 18px;
+    border: 2px solid var(--button-foreground);
+    background: var(--accent);
+    color: var(--button-foreground);
+    box-shadow: 4px 4px 0 var(--button-foreground);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.primary-link:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--button-foreground);
+}
+
+.secondary-link {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+}
+
+/* Position the signature independently from the text. */
+.hero .signature {
+    display: block;
+    margin-top: 36px;
+    font-size: 2rem;
+    text-align: right;
+}
+
+/* Establish a drawing area for the SVG illustration. */
+.hero-illustration {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+}
+
+.sketch-art {
+    width: 100%;
+    max-width: 420px;
+    overflow: visible;
+}
+
+.sketch-line {
+    stroke: var(--foreground);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sketch-secondary {
+    opacity: 0.45;
+    stroke-width: 1.5;
+}
+
+.sketch-accent {
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sketch-dot {
+    fill: var(--accent);
+}
+
+.sketch-label {
+    fill: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.illustration-note {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: var(--muted);
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    transform: rotate(-5deg);
+}
+
+/* Adapt the hero composition to mobile screens. */
+@media (max-width: 760px) {
+    .hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding-top: 48px;
+    }
+
+    .hero h1 {
+        font-size: clamp(3.5rem, 15vw, 5rem);
+    }
+
+    .hero-illustration {
+        max-width: 360px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .hero .signature {
+        margin-top: 24px;
     }
 }

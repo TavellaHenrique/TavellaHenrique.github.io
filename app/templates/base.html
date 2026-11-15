@@ -32,15 +32,12 @@
         </nav>
 
         <div class="header-controls">
-            {% if content.language == "en" %}
-                <a class="language-toggle" href="{{ url_for('main.index_pt_br') }}">
-                    PT-BR
-                </a>
-            {% else %}
-                <a class="language-toggle" href="{{ url_for('main.index') }}">
-                    EN
-                </a>
-            {% endif %}
+            <a
+                class="language-toggle"
+                href="{{ url_for(content.language_toggle_endpoint) }}"
+            >
+                {{ content.alternate_language }}
+            </a>
 
             <button
                 class="theme-toggle"

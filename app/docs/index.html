@@ -32,11 +32,12 @@
         </nav>
 
         <div class="header-controls">
-            
-                <a class="language-toggle" href="pt-br/index.html">
-                    PT-BR
-                </a>
-            
+            <a
+                class="language-toggle"
+                href="pt-br/index.html"
+            >
+                PT-BR
+            </a>
 
             <button
                 class="theme-toggle"
@@ -52,42 +53,172 @@
     <main>
         
 <section id="home" class="hero section-container">
-    <span class="handwritten-note">Hello, I&#39;m</span>
+    <div class="hero-content">
 
-    <h1>Henrique Tavella</h1>
+        <span class="handwritten-note">Hey, I&#39;m</span>
 
-    <h2>Systems Analysis and Development Student</h2>
+        <h1>
+            Henrique<br>
+            <span>Tavella.</span>
+        </h1>
 
-    <p class="hero-description">
-        All my life, I&#39;ve been fascinated by dreams and ideas. However, I soon realized that many of them were simply abandoned. To me, software development is a path: a way to help people by giving their ideas the opportunity to become something real.
-    </p>
+        <h2>Systems Analysis and Development Student</h2>
+
+        <p class="hero-description">
+            To me, software development is a path: a way to help people by giving their ideas the opportunity to become something real.
+        </p>
+
+        <div class="hero-actions">
+            <a class="primary-link" href="#projects">
+                Explore my projects
+            </a>
+
+            <a class="secondary-link" href="#contact">
+                Get in touch
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-illustration" aria-hidden="true">
+        <svg
+            class="sketch-art"
+            viewBox="0 0 420 380"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+        >
+            <!-- Draw the main idea bubble. -->
+            <path
+                class="sketch-line"
+                d="M93 89 C100 30 180 20 236 39
+                   C293 57 323 112 304 168
+                   C288 218 220 237 157 213
+                   L112 243 L121 194
+                   C98 169 86 128 93 89Z"
+            />
+
+            <!-- Add a second imperfect outline. -->
+            <path
+                class="sketch-line sketch-secondary"
+                d="M100 94 C108 43 182 29 234 47
+                   C284 65 315 115 296 163"
+            />
+
+            <g transform="translate(176 148) scale(0.86) translate(-176 -148)">
+                <path
+                    class="sketch-accent"
+                    d="M176 83 C147 83 128 104 128 131
+                       C128 150 140 164 153 176
+                       L158 195 L194 195 L200 176
+                       C214 162 224 148 224 130
+                       C224 103 203 83 176 83Z"
+                />
+
+                <path
+                    class="sketch-line"
+                    d="M158 203 L196 203 M162 213 L192 213"
+                />
+            </g>
+
+            <!-- Draw light rays. -->
+            <path
+                class="sketch-accent"
+                d="M176 61 L176 43 M117 78 L103 65
+                   M236 78 L250 64 M111 132 L92 132
+                   M242 132 L261 132"
+            />
+
+            <!-- Connect a person to the resulting mobile app. -->
+            <circle class="sketch-line" cx="88" cy="282" r="10"/>
+            <path
+                class="sketch-line"
+                d="M66 321 C67 305 75 296 88 296
+                   C101 296 109 305 110 321
+                   M118 307 L174 307 L174 267 L207 267"
+            />
+
+            <path
+                class="sketch-accent"
+                d="M201 260 L211 267 L201 274"
+            />
+
+            <path
+                class="sketch-line"
+                d="M214 246 C214 243 216 241 219 241
+                   L239 241 C242 241 244 243 244 246
+                   L244 288 C244 291 242 293 239 293
+                   L219 293 C216 293 214 291 214 288Z
+                   M223 247 L235 247"
+            />
+            <circle class="sketch-dot" cx="229" cy="286" r="1.5"/>
+
+            <circle class="sketch-dot" cx="71" cy="48" r="4"/>
+            <circle class="sketch-dot" cx="338" cy="102" r="5"/>
+            <circle class="sketch-dot" cx="294" cy="316" r="4"/>
+        </svg>
+
+        <span class="illustration-note">From thought to reality</span>
+    </div>
 </section>
 
 <section id="projects" class="content-section section-container">
     <h2>Projects</h2>
 
     <article class="project-card">
-        <span class="project-number">01</span>
+        <header class="project-card-header">
+            <span class="project-number">01</span>
+            <div>
+                <span class="project-kicker">Local multiplayer · Player vs. CPU</span>
+                <h3>Pong By Allevat</h3>
+                <p>A reproduction of the classic Pong game, developed to explore the Pygame module through a familiar and concrete project.</p>
+            </div>
+        </header>
 
-        <h3>Pong By Allevat</h3>
+        <figure class="project-preview">
+            <img
+                src="static/images/pong-by-allevat.svg"
+                alt="Illustration of a Pong match with two paddles, a ball, and a score of 3 to 2."
+                loading="lazy"
+            >
+            <figcaption>Illustrative gameplay preview · Classic theme</figcaption>
+        </figure>
 
-        <p>A reproduction of the classic Pong game, developed to explore the Pygame module through a familiar and concrete project.</p>
+        <div class="project-details">
+            <section class="project-detail">
+                <h4>Project objective</h4>
+                <p>Explore Pygame by reproducing a well-known game.</p>
+            </section>
 
-        <h4>Project objective</h4>
-        <p>Explore Pygame by reproducing a well-known game.</p>
+            <section class="project-detail">
+                <h4>Implemented features</h4>
+                <ul class="project-feature-list">
+                        <li>Local matches for two players or against the computer</li>
 
-        <div class="technology-list">
-            <span>Python</span>
-            <span>Pygame</span>
+                        <li>Selectable visual themes</li>
+
+                        <li>Adjustable score target</li>
+
+                        <li>Ball speed increases during a match</li>
+</ul>
+            </section>
+
+            <section class="project-detail">
+                <h4>Technologies</h4>
+                <div class="technology-list">
+                        <span>Python 3.12</span>
+
+                        <span>Pygame</span>
+</div>
+            </section>
+
+            <a
+                class="project-repository"
+                href="https://github.com/TavellaHenrique/PongByAllevat"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                View source on GitHub ↗
+            </a>
         </div>
-
-        <a
-            href="https://github.com/TavellaHenrique/PongByAllevat"
-            target="_blank"
-            rel="noopener noreferrer"
-        >
-            View repository ↗
-        </a>
     </article>
 </section>
 
@@ -96,27 +227,56 @@
 
     <div class="skills-grid">
         <article class="skill-card">
-            <h3>Web Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="4" width="18" height="16" rx="2"/>
+                    <path d="M3 9h18M7 6.5h.01M10 6.5h.01M8 13l-2 2 2 2m4 0h4"/>
+                </svg>
+                Web Development
+            </h3>
             <p>HTML · CSS · JavaScript · PHP</p>
         </article>
 
         <article class="skill-card">
-            <h3>Desktop Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="3" y="3" width="18" height="14" rx="2"/>
+                    <path d="M8 21h8m-4-4v4M8 8l2 2-2 2m5 0h3"/>
+                </svg>
+                Desktop Development
+            </h3>
             <p>Java · Python · C#</p>
         </article>
 
         <article class="skill-card">
-            <h3>Mobile Development</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="7" y="2" width="10" height="20" rx="2"/>
+                    <path d="M11 5h2m-2 14h2"/>
+                </svg>
+                Mobile Development
+            </h3>
             <p>Java · Kotlin · Dart · Flutter</p>
         </article>
 
         <article class="skill-card">
-            <h3>Databases</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <ellipse cx="12" cy="5" rx="8" ry="3"/>
+                    <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+                </svg>
+                Databases
+            </h3>
             <p>MySQL · SQLite</p>
         </article>
 
         <article class="skill-card">
-            <h3>Tools</h3>
+            <h3>
+                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M3 9h18v12H3zM8 9V5h8v4M3 14h18m-8 0v3h-4v-3"/>
+                </svg>
+                Tools
+            </h3>
             <p>Git · GitHub · VS Code</p>
         </article>
     </div>
