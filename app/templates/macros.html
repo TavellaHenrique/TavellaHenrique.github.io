@@ -1,0 +1,37 @@
+{% macro skill_icon(icon) -%}
+<svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">{% if icon == "web" -%}
+<rect x="3" y="4" width="18" height="16" rx="2"/>
+<path d="M3 9h18M7 6.5h.01M10 6.5h.01M8 13l-2 2 2 2m4 0h4"/>
+{%- elif icon == "desktop" -%}
+<rect x="3" y="3" width="18" height="14" rx="2"/>
+<path d="M8 21h8m-4-4v4M8 8l2 2-2 2m5 0h3"/>
+{%- elif icon == "mobile" -%}
+<rect x="7" y="2" width="10" height="20" rx="2"/>
+<path d="M11 5h2m-2 14h2"/>
+{%- elif icon == "database" -%}
+<ellipse cx="12" cy="5" rx="8" ry="3"/>
+<path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
+{%- elif icon == "tools" -%}
+<path d="M3 9h18v12H3zM8 9V5h8v4M3 14h18m-8 0v3h-4v-3"/>
+{%- endif %}</svg>
+{%- endmacro %}
+
+{% macro skill_card(category) -%}
+<article class="skill-card">
+    <h3>{{ skill_icon(category.icon) }}{{ category.title }}</h3>
+    <p>{{ category.technologies | join(" · ") }}</p>
+</article>
+{%- endmacro %}
+
+{% macro contact_card(card) -%}
+<a
+    class="contact-card {{ card.class_name }}"
+    href="{{ card.href }}"
+    {%- if card.external %} target="_blank" rel="noopener noreferrer"{% endif -%}
+>
+    <span class="contact-icon" aria-hidden="true">{{ card.icon }}</span>
+    <strong>{{ card.text }}</strong>
+    <span class="contact-address">{{ card.label }}: {{ card.info }}</span>
+    <span class="contact-arrow" aria-hidden="true">↗</span>
+</a>
+{%- endmacro %}

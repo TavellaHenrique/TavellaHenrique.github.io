@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "macros.html" import contact_card, skill_card %}
 
 {% block content %}
 <section id="home" class="hero section-container">
@@ -7,8 +8,8 @@
         <span class="handwritten-note">{{ content.hero.note }}</span>
 
         <h1>
-            Henrique<br>
-            <span>Tavella.</span>
+            {{ content.hero.first_name }}<br>
+            <span>{{ content.hero.last_name }}.</span>
         </h1>
 
         <h2>{{ content.hero.role }}</h2>
@@ -139,16 +140,20 @@
 
             <section class="project-detail">
                 <h4>{{ content.project.features_title }}</h4>
-                <ul class="project-feature-list">{% for feature in content.project.features %}
-                        <li>{{ feature }}</li>
-{% endfor %}</ul>
+                <ul class="project-feature-list">
+{% for feature in content.project.features -%}
+                    <li>{{ feature }}</li>
+{%- endfor %}
+                </ul>
             </section>
 
             <section class="project-detail">
                 <h4>{{ content.project.technology_title }}</h4>
-                <div class="technology-list">{% for technology in content.project.technologies %}
-                        <span>{{ technology }}</span>
-{% endfor %}</div>
+                <div class="technology-list">
+{% for technology in content.project.technologies -%}
+                    <span>{{ technology }}</span>
+{%- endfor %}
+                </div>
             </section>
 
             <a
@@ -164,62 +169,12 @@
 </section>
 
 <section id="skills" class="content-section section-container">
-    <h2>{{ content.sections.skills }}</h2>
+    <h2>{{ content.sections.skills }} <span class="handwritten-note">{{ content.skills.note }}</span></h2>
 
     <div class="skills-grid">
-        <article class="skill-card">
-            <h3>
-                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <rect x="3" y="4" width="18" height="16" rx="2"/>
-                    <path d="M3 9h18M7 6.5h.01M10 6.5h.01M8 13l-2 2 2 2m4 0h4"/>
-                </svg>
-                Web Development
-            </h3>
-            <p>HTML · CSS · JavaScript · PHP</p>
-        </article>
-
-        <article class="skill-card">
-            <h3>
-                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <rect x="3" y="3" width="18" height="14" rx="2"/>
-                    <path d="M8 21h8m-4-4v4M8 8l2 2-2 2m5 0h3"/>
-                </svg>
-                Desktop Development
-            </h3>
-            <p>Java · Python · C#</p>
-        </article>
-
-        <article class="skill-card">
-            <h3>
-                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <rect x="7" y="2" width="10" height="20" rx="2"/>
-                    <path d="M11 5h2m-2 14h2"/>
-                </svg>
-                Mobile Development
-            </h3>
-            <p>Java · Kotlin · Dart · Flutter</p>
-        </article>
-
-        <article class="skill-card">
-            <h3>
-                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <ellipse cx="12" cy="5" rx="8" ry="3"/>
-                    <path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>
-                </svg>
-                Databases
-            </h3>
-            <p>MySQL · SQLite</p>
-        </article>
-
-        <article class="skill-card">
-            <h3>
-                <svg class="skill-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <path d="M3 9h18v12H3zM8 9V5h8v4M3 14h18m-8 0v3h-4v-3"/>
-                </svg>
-                Tools
-            </h3>
-            <p>Git · GitHub · VS Code</p>
-        </article>
+{% for category in content.skills.categories -%}
+        {{ skill_card(category) }}
+{%- endfor %}
     </div>
 </section>
 
@@ -233,33 +188,23 @@
     <p>{{ content.about.graduation }}</p>
 </section>
 
-<section id="contact" class="content-section section-container">
-    <h2>{{ content.sections.contact }}</h2>
+<section id="contact" class="content-section contact-section section-container">
+    <div class="contact-heading">
+        <h2>{{ content.sections.contact }}</h2>
+        <h3>{{ content.contact.heading }}</h3>
 
-    <ul class="contact-list">
-        <li>
-            <a href="mailto:henriquetavella0@gmail.com">
-                Email
-            </a>
-        </li>
-        <li>
-            <a
-                href="https://github.com/TavellaHenrique/"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                GitHub
-            </a>
-        </li>
-        <li>
-            <a
-                href="https://www.linkedin.com/in/tavellahenrique/"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                LinkedIn
-            </a>
-        </li>
-    </ul>
+        <p>{{ content.contact.description }}</p>
+    </div>
+
+    <div class="contact-grid">
+{% for card in content.contact.cards -%}
+        {{ contact_card(card) }}
+{%- endfor %}
+    </div>
+
+    <div class="contact-closing">
+        <p>{{ content.contact.closing }}</p>
+        <span class="signature">{{ content.contact.signature }}</span>
+    </div>
 </section>
 {% endblock %}

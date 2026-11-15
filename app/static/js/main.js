@@ -1,5 +1,7 @@
 // Find the theme control and the document root.
 const themeToggle = document.querySelector(".theme-toggle");
+const languageToggle = document.querySelector(".language-toggle");
+const siteHeader = document.querySelector(".site-header");
 const rootElement = document.documentElement;
 
 // Restore the saved theme or use light mode by default.
@@ -27,4 +29,31 @@ themeToggle.addEventListener("click", () => {
         rootElement.dataset.theme === "dark" ? "light" : "dark";
 
     updateTheme(nextTheme);
+});
+
+languageToggle.addEventListener("click", (event) => {
+    const sections = Array.from(
+        document.querySelectorAll("main section[id]")
+    );
+    const headerHeight = siteHeader.getBoundingClientRect().height;
+    const isAtPageBottom =
+        window.scrollY + window.innerHeight >=
+        document.documentElement.scrollHeight - 2;
+    let currentSection = isAtPageBottom
+        ? sections[sections.length - 1]
+        : sections[0];
+
+    if (!isAtPageBottom) {
+        sections.forEach((section) => {
+            if (section.getBoundingClientRect().top <= headerHeight + 48) {
+                currentSection = section;
+            }
+        });
+    }
+
+    const destination = new URL(languageToggle.href, window.location.href);
+    destination.hash = currentSection.id;
+
+    event.preventDefault();
+    window.location.assign(destination.href);
 });

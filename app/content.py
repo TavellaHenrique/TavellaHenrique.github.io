@@ -1,21 +1,31 @@
 CONTENT = {
     "en": {
         "language": "en",
-        "language_name": "English",
         "alternate_language": "PT-BR",
         "language_toggle_endpoint": "main.index_pt_br",
+        "site": {
+            "brand": "Allevat",
+            "title": "Henrique Tavella | Portfolio",
+            "description": "Henrique Tavella — Developer Portfolio",
+            "author": "Henrique Ribeiro da Cunha Tavella",
+        },
+        "accessibility": {
+            "home_link": "Henrique Tavella - Home",
+            "main_navigation": "Main navigation",
+            "theme_toggle": "Toggle color theme",
+        },
         "navigation": {
             "home": "Home",
             "projects": "Projects",
-            "skills": "Skills",
+            "skills": "Technical Skills",
             "about": "About",
             "contact": "Contact",
         },
         "hero": {
-            "greeting": "Hey, I'm",
-            "name": "Henrique Tavella",
             "note": "Hey, I'm",
-            "role": "Systems Analysis and Development Student",
+            "first_name": "Henrique",
+            "last_name": "Tavella",
+            "role": "About Systems Development",
             "description": (
                 "To me, software development is a path: a way "
                 "to help people by giving their ideas the opportunity "
@@ -30,6 +40,36 @@ CONTENT = {
             "skills": "Technical Skills",
             "about": "About Me",
             "contact": "Contact",
+        },
+        "skills": {
+            "note": "A quick summary...",
+            "categories": [
+                {
+                    "icon": "web",
+                    "title": "Web Development",
+                    "technologies": ["HTML", "CSS", "JavaScript", "PHP"],
+                },
+                {
+                    "icon": "desktop",
+                    "title": "Desktop Development",
+                    "technologies": ["Java", "Python", "C#"],
+                },
+                {
+                    "icon": "mobile",
+                    "title": "Mobile Development",
+                    "technologies": ["Java", "Kotlin", "Dart", "Flutter"],
+                },
+                {
+                    "icon": "database",
+                    "title": "Databases",
+                    "technologies": ["MySQL", "SQLite"],
+                },
+                {
+                    "icon": "tools",
+                    "title": "Tools",
+                    "technologies": ["Git", "GitHub", "VS Code"],
+                },
+            ],
         },
         "project": {
             "name": "Pong By Allevat",
@@ -67,10 +107,37 @@ CONTENT = {
                 "Have a project, an idea or an opportunity in mind? "
                 "Feel free to reach out."
             ),
-            "email": "Send me an email",
-            "github": "Explore my repositories",
-            "linkedin": "Connect professionally",
+            "cards": [
+                {
+                    "class_name": "email-card",
+                    "icon": "@",
+                    "label": "Email",
+                    "text": "Send me an email",
+                    "info": "henriquetavella0@gmail.com",
+                    "href": "mailto:henriquetavella0@gmail.com",
+                    "external": False,
+                },
+                {
+                    "class_name": "github-card",
+                    "icon": "GH",
+                    "label": "GitHub",
+                    "text": "Explore my repositories",
+                    "info": "TavellaHenrique",
+                    "href": "https://github.com/TavellaHenrique/",
+                    "external": True,
+                },
+                {
+                    "class_name": "linkedin-card",
+                    "icon": "in",
+                    "label": "LinkedIn",
+                    "text": "Connect professionally",
+                    "info": "Henrique Tavella",
+                    "href": "https://www.linkedin.com/in/tavellahenrique/",
+                    "external": True,
+                },
+            ],
             "closing": "Every great project starts with a conversation.",
+            "signature": "— Allevat",
         },
         "about": {
             "full_name": "Henrique Ribeiro da Cunha Tavella",
@@ -79,13 +146,27 @@ CONTENT = {
             "course": "Systems Analysis and Development",
             "graduation": "Expected graduation: December 2027",
         },
-        "footer": "Designed and developed by Allevat.",
+        "footer": {
+            "credit": "Designed and developed by Allevat.",
+            "copyright": "© {year} Henrique Tavella",
+            "year": 2026,
+        },
     },
     "pt-br": {
         "language": "pt-BR",
-        "language_name": "Português",
         "alternate_language": "EN",
         "language_toggle_endpoint": "main.index",
+        "site": {
+            "brand": "Allevat",
+            "title": "Henrique Tavella | Portfólio",
+            "description": "Portfólio de Henrique Tavella",
+            "author": "Henrique Ribeiro da Cunha Tavella",
+        },
+        "accessibility": {
+            "home_link": "Henrique Tavella - Início",
+            "main_navigation": "Navegação principal",
+            "theme_toggle": "Alternar tema de cores",
+        },
         "navigation": {
             "home": "Início",
             "projects": "Projetos",
@@ -94,14 +175,12 @@ CONTENT = {
             "contact": "Contato",
         },
         "hero": {
-            "greeting": "Olá, visitante! Eu sou",
-            "name": "Henrique Tavella",
-            "note": "Um desenvolvedor em desenvolvimento.",
-            "role": "Estudante de Análise e Desenvolvimento de Sistemas",
+            "note": "Olá, eu sou",
+            "first_name": "Henrique",
+            "last_name": "Tavella",
+            "role": "Sobre desenvolver sistemas",
             "description": (
-                "Durante toda a minha vida, fui fascinado por sonhos e ideias. "
-                "Entretanto, logo percebi que muitos deles eram simplesmente "
-                "abandonados. Para mim, o desenvolvimento de software é um "
+                "Para mim, o desenvolvimento de software é um "
                 "caminho: uma forma de ajudar pessoas, dando às suas ideias "
                 "a oportunidade de se tornarem realidade."
             ),
@@ -114,6 +193,36 @@ CONTENT = {
             "skills": "Habilidades Técnicas",
             "about": "Sobre Mim",
             "contact": "Contato",
+        },
+        "skills": {
+            "note": "Bem resumidas...",
+            "categories": [
+                {
+                    "icon": "web",
+                    "title": "Desenvolvimento Web",
+                    "technologies": ["HTML", "CSS", "JavaScript", "PHP"],
+                },
+                {
+                    "icon": "desktop",
+                    "title": "Desenvolvimento para Desktop",
+                    "technologies": ["Java", "Python", "C#"],
+                },
+                {
+                    "icon": "mobile",
+                    "title": "Desenvolvimento Mobile",
+                    "technologies": ["Java", "Kotlin", "Dart", "Flutter"],
+                },
+                {
+                    "icon": "database",
+                    "title": "Bancos de Dados",
+                    "technologies": ["MySQL", "SQLite"],
+                },
+                {
+                    "icon": "tools",
+                    "title": "Ferramentas",
+                    "technologies": ["Git", "GitHub", "VS Code"],
+                },
+            ],
         },
         "project": {
             "name": "Pong By Allevat",
@@ -151,10 +260,37 @@ CONTENT = {
                 "Tem um projeto, uma ideia ou uma oportunidade em mente? "
                 "Fique à vontade para entrar em contato."
             ),
-            "email": "Envie um e-mail",
-            "github": "Explore meus repositórios",
-            "linkedin": "Conecte-se profissionalmente",
+            "cards": [
+                {
+                    "class_name": "email-card",
+                    "icon": "@",
+                    "label": "E-mail",
+                    "text": "Envie um e-mail",
+                    "info": "henriquetavella0@gmail.com",
+                    "href": "mailto:henriquetavella0@gmail.com",
+                    "external": False,
+                },
+                {
+                    "class_name": "github-card",
+                    "icon": "GH",
+                    "label": "GitHub",
+                    "text": "Explore meus repositórios",
+                    "info": "TavellaHenrique",
+                    "href": "https://github.com/TavellaHenrique/",
+                    "external": True,
+                },
+                {
+                    "class_name": "linkedin-card",
+                    "icon": "in",
+                    "label": "LinkedIn",
+                    "text": "Conecte-se profissionalmente",
+                    "info": "Henrique Tavella",
+                    "href": "https://www.linkedin.com/in/tavellahenrique/",
+                    "external": True,
+                },
+            ],
             "closing": "Todo grande projeto começa com uma conversa.",
+            "signature": "— Allevat",
         },
         "about": {
             "full_name": "Henrique Ribeiro da Cunha Tavella",
@@ -163,6 +299,10 @@ CONTENT = {
             "course": "Análise e Desenvolvimento de Sistemas",
             "graduation": "Previsão de conclusão: dezembro de 2027",
         },
-        "footer": "Projetado e desenvolvido por Allevat.",
+        "footer": {
+            "credit": "Projetado e desenvolvido por Allevat.",
+            "copyright": "© {year} Henrique Tavella",
+            "year": 2026,
+        },
     },
 }
