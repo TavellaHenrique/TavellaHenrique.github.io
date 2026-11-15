@@ -11,13 +11,12 @@ CONTENT = {
             "contact": "Contact",
         },
         "hero": {
-            "greeting": "Hello, I'm",
+            "greeting": "Hey, I'm",
             "name": "Henrique Tavella",
+            "note": "Hey, I'm",
             "role": "Systems Analysis and Development Student",
             "description": (
-                "All my life, I've been fascinated by dreams and ideas. "
-                "However, I soon realized that many of them were simply "
-                "abandoned. To me, software development is a path: a way "
+                "To me, software development is a path: a way "
                 "to help people by giving their ideas the opportunity "
                 "to become something real."
             ),
@@ -62,8 +61,9 @@ CONTENT = {
             "contact": "Contato",
         },
         "hero": {
-            "greeting": "Olá, eu sou",
+            "greeting": "Olá, visitante! Eu sou",
             "name": "Henrique Tavella",
+            "note": "Um desenvolvedor em desenvolvimento.",
             "role": "Estudante de Análise e Desenvolvimento de Sistemas",
             "description": (
                 "Durante toda a minha vida, fui fascinado por sonhos e ideias. "

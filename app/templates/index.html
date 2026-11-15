@@ -2,15 +2,125 @@
 
 {% block content %}
 <section id="home" class="hero section-container">
-    <span class="handwritten-note">{{ content.hero.greeting }}</span>
+    <div class="hero-content">
 
-    <h1>{{ content.hero.name }}</h1>
+        <span class="handwritten-note">{{ content.hero.note }}</span>
 
-    <h2>{{ content.hero.role }}</h2>
+        <h1>
+            Henrique<br>
+            <span>Tavella.</span>
+        </h1>
 
-    <p class="hero-description">
-        {{ content.hero.description }}
-    </p>
+        <h2>{{ content.hero.role }}</h2>
+
+        <p class="hero-description">
+            {{ content.hero.description }}
+        </p>
+
+        <div class="hero-actions">
+            <a class="primary-link" href="#projects">
+                {% if content.language == "en" %}
+                    Explore my projects
+                {% else %}
+                    Conheça meus projetos
+                {% endif %}
+                <span aria-hidden="true">↗</span>
+            </a>
+
+            <a class="secondary-link" href="#contact">
+                {% if content.language == "en" %}
+                    Get in touch
+                {% else %}
+                    Entre em contato
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-illustration" aria-hidden="true">
+        <svg
+            class="sketch-art"
+            viewBox="0 0 420 380"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+        >
+            <!-- Draw the main idea bubble. -->
+            <path
+                class="sketch-line"
+                d="M93 89 C100 30 180 20 236 39
+                   C293 57 323 112 304 168
+                   C288 218 220 237 157 213
+                   L112 243 L121 194
+                   C98 169 86 128 93 89Z"
+            />
+
+            <!-- Add a second imperfect outline. -->
+            <path
+                class="sketch-line sketch-secondary"
+                d="M100 94 C108 43 182 29 234 47
+                   C284 65 315 115 296 163"
+            />
+
+            <!-- Draw a light bulb. -->
+            <path
+                class="sketch-accent"
+                d="M176 83 C147 83 128 104 128 131
+                   C128 150 140 164 153 176
+                   L158 195 L194 195 L200 176
+                   C214 162 224 148 224 130
+                   C224 103 203 83 176 83Z"
+            />
+
+            <path
+                class="sketch-line"
+                d="M158 203 L196 203 M162 213 L192 213"
+            />
+
+            <!-- Draw light rays. -->
+            <path
+                class="sketch-accent"
+                d="M176 61 L176 43 M117 78 L103 65
+                   M236 78 L250 64 M111 132 L92 132
+                   M242 132 L261 132"
+            />
+
+            <!-- Add a small technical diagram. -->
+            <path
+                class="sketch-line"
+                d="M64 287 L147 287 L147 326
+                   L64 326 Z M147 306 L207 306
+                   M207 306 L207 267 L257 267"
+            />
+
+            <path
+                class="sketch-accent"
+                d="M250 260 L260 267 L250 274"
+            />
+
+            <!-- Add handwritten-style decorative marks. -->
+            <path
+                class="sketch-line sketch-secondary"
+                d="M303 252 C323 242 344 245 354 258
+                   M309 266 C329 257 342 260 351 271"
+            />
+
+            <circle class="sketch-dot" cx="71" cy="48" r="4"/>
+            <circle class="sketch-dot" cx="338" cy="102" r="5"/>
+            <circle class="sketch-dot" cx="294" cy="316" r="4"/>
+
+            <text class="sketch-label" x="65" y="350">
+                IDEA → IMPLEMENTATION
+            </text>
+        </svg>
+
+        <span class="illustration-note">
+            {% if content.language == "en" %}
+                From thought to reality
+            {% else %}
+                Da ideia à realidade
+            {% endif %}
+        </span>
+    </div>
 </section>
 
 <section id="projects" class="content-section section-container">
