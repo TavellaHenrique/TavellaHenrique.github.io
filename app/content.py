@@ -18,7 +18,6 @@ CONTENT = {
             "home": "Home",
             "projects": "Projects",
             "skills": "Technical Skills",
-            "about": "About",
             "contact": "Contact",
         },
         "hero": {
@@ -38,7 +37,6 @@ CONTENT = {
         "sections": {
             "projects": "Projects",
             "skills": "Technical Skills",
-            "about": "About Me",
             "contact": "Contact",
         },
         "skills": {
@@ -139,13 +137,6 @@ CONTENT = {
             "closing": "Every great project starts with a conversation.",
             "signature": "— Allevat",
         },
-        "about": {
-            "full_name": "Henrique Ribeiro da Cunha Tavella",
-            "institution": "Fatec Campinas",
-            "location": "Campinas, São Paulo, Brazil",
-            "course": "Systems Analysis and Development",
-            "graduation": "Expected graduation: December 2027",
-        },
         "footer": {
             "credit": "Designed and developed by Allevat.",
             "copyright": "© {year} Henrique Tavella",
@@ -171,7 +162,6 @@ CONTENT = {
             "home": "Início",
             "projects": "Projetos",
             "skills": "Habilidades",
-            "about": "Sobre",
             "contact": "Contato",
         },
         "hero": {
@@ -191,7 +181,6 @@ CONTENT = {
         "sections": {
             "projects": "Projetos",
             "skills": "Habilidades Técnicas",
-            "about": "Sobre Mim",
             "contact": "Contato",
         },
         "skills": {
@@ -291,13 +280,6 @@ CONTENT = {
             ],
             "closing": "Todo grande projeto começa com uma conversa.",
             "signature": "— Allevat",
-        },
-        "about": {
-            "full_name": "Henrique Ribeiro da Cunha Tavella",
-            "institution": "Fatec Campinas",
-            "location": "Campinas, São Paulo, Brasil",
-            "course": "Análise e Desenvolvimento de Sistemas",
-            "graduation": "Previsão de conclusão: dezembro de 2027",
         },
         "footer": {
             "credit": "Projetado e desenvolvido por Allevat.",
