@@ -32,7 +32,6 @@ CONTENT = {
             ),
             "projects_link": "Explore my projects",
             "contact_link": "Get in touch",
-            "illustration_note": "From thought to reality",
         },
         "sections": {
             "projects": "Projects",
@@ -176,7 +175,6 @@ CONTENT = {
             ),
             "projects_link": "Conheça meus projetos",
             "contact_link": "Entre em contato",
-            "illustration_note": "Da ideia à realidade",
         },
         "sections": {
             "projects": "Projetos",
