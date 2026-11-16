@@ -4,7 +4,7 @@ CONTENT = {
         "alternate_language": "PT-BR",
         "language_toggle_endpoint": "main.index_pt_br",
         "site": {
-            "brand": "Allevat",
+            "brand": "<< Allevat >>",
             "title": "Henrique Tavella | Portfolio",
             "description": "Henrique Tavella — Developer Portfolio",
             "author": "Henrique Ribeiro da Cunha Tavella",
@@ -133,11 +133,9 @@ CONTENT = {
                     "external": True,
                 },
             ],
-            "closing": "Every great project starts with a conversation.",
-            "signature": "— Allevat",
+            "signature": "<< Allevat >>",
         },
         "footer": {
-            "credit": "Designed and developed by Allevat.",
             "copyright": "© {year} Henrique Tavella",
             "year": 2026,
         },
@@ -147,7 +145,7 @@ CONTENT = {
         "alternate_language": "EN",
         "language_toggle_endpoint": "main.index",
         "site": {
-            "brand": "Allevat",
+            "brand": "<< Allevat >>",
             "title": "Henrique Tavella | Portfólio",
             "description": "Portfólio de Henrique Tavella",
             "author": "Henrique Ribeiro da Cunha Tavella",
@@ -276,11 +274,9 @@ CONTENT = {
                     "external": True,
                 },
             ],
-            "closing": "Todo grande projeto começa com uma conversa.",
-            "signature": "— Allevat",
+            "signature": "<< Allevat >>",
         },
         "footer": {
-            "credit": "Projetado e desenvolvido por Allevat.",
             "copyright": "© {year} Henrique Tavella",
             "year": 2026,
         },
