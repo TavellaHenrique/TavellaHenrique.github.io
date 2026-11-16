@@ -1,0 +1,66 @@
+
+name: Build and Deploy Portfolio
+
+# Run the workflow when changes reach the main branch.
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Grant the permissions required for GitHub Pages deployment.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Prevent simultaneous deployments.
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Download the repository source code.
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      # Configure the Python environment.
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # Install project dependencies.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Generate the static website.
+      - name: Build website
+        run: |
+          python build.py
+          touch docs/.nojekyll
+
+      # Configure GitHub Pages.
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # Upload the generated website.
+      - name: Upload website artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      # Publish the website.
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
