@@ -63,6 +63,11 @@ body {
     transition: background-color 0.2s, color 0.2s;
 }
 
+::selection {
+    color: var(--skill-note-ink);
+    background-color: var(--skill-note);
+}
+
 a:focus-visible,
 button:focus-visible {
     outline: 3px solid var(--accent);
@@ -166,13 +171,23 @@ button:focus-visible {
     transition: opacity 0.2s, transform 0.2s;
 }
 
-.main-navigation a:hover::after,
-.main-navigation a:focus-visible::after {
+.main-navigation a.is-active::after {
     opacity: 1;
     transform: rotate(2deg) scale(1);
 }
 
-.main-navigation a:hover,
+.main-navigation a:not(.is-active),
+.secondary-link {
+    text-decoration-color: var(--accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+}
+
+.main-navigation a:not(.is-active):hover,
+.main-navigation a:not(.is-active):focus-visible {
+    text-decoration-line: underline;
+}
+
 .language-toggle:hover {
     color: var(--accent);
 }
@@ -270,10 +285,7 @@ button:focus-visible {
 
 .secondary-link {
     color: var(--foreground);
-    text-decoration-color: var(--accent);
     text-decoration-line: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 5px;
 }
 
 .hero-illustration {
@@ -668,11 +680,6 @@ button:focus-visible {
     margin: 0;
 }
 
-.site-footer span {
-    margin-left: auto;
-    text-align: right;
-}
-
 /* Responsive layouts */
 @media (max-width: 860px) {
     .hero {
@@ -764,14 +771,9 @@ button:focus-visible {
     }
 
     .site-footer {
-        align-items: stretch;
+        align-items: center;
         flex-direction: column;
         gap: 4px;
-    }
-
-    .site-footer span {
-        align-self: center;
-        margin-left: 0;
         text-align: center;
     }
 }

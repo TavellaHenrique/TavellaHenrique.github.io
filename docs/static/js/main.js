@@ -2,6 +2,12 @@
 const themeToggle = document.querySelector(".theme-toggle");
 const languageToggle = document.querySelector(".language-toggle");
 const siteHeader = document.querySelector(".site-header");
+const navigationLinks = Array.from(
+    document.querySelectorAll(".main-navigation a")
+);
+const sections = Array.from(
+    document.querySelectorAll("main section[id]")
+);
 const rootElement = document.documentElement;
 
 // Restore the saved theme or use light mode by default.
@@ -31,10 +37,7 @@ themeToggle.addEventListener("click", () => {
     updateTheme(nextTheme);
 });
 
-languageToggle.addEventListener("click", (event) => {
-    const sections = Array.from(
-        document.querySelectorAll("main section[id]")
-    );
+function getCurrentSection() {
     const headerHeight = siteHeader.getBoundingClientRect().height;
     const isAtPageBottom =
         window.scrollY + window.innerHeight >=
@@ -51,6 +54,30 @@ languageToggle.addEventListener("click", (event) => {
         });
     }
 
+    return currentSection;
+}
+
+function updateActiveNavigation() {
+    const currentSection = getCurrentSection();
+
+    navigationLinks.forEach((link) => {
+        const isCurrent = link.hash === `#${currentSection.id}`;
+        link.classList.toggle("is-active", isCurrent);
+
+        if (isCurrent) {
+            link.setAttribute("aria-current", "location");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    });
+}
+
+updateActiveNavigation();
+window.addEventListener("scroll", updateActiveNavigation, { passive: true });
+window.addEventListener("resize", updateActiveNavigation);
+
+languageToggle.addEventListener("click", (event) => {
+    const currentSection = getCurrentSection();
     const destination = new URL(languageToggle.href, window.location.href);
     destination.hash = currentSection.id;
 
