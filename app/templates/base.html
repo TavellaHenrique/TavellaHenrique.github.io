@@ -31,12 +31,64 @@
         </nav>
 
         <div class="header-controls">
-            <a
-                class="language-toggle"
-                href="{{ url_for(content.language_toggle_endpoint) }}"
-            >
-                {{ content.alternate_language }}
-            </a>
+            <div class="language-picker" data-current-language="{{ content.language }}">
+                <button
+                    class="language-toggle"
+                    type="button"
+                    aria-label="{{ content.accessibility.language_selector }}"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-controls="language-options"
+                >
+                    <span class="language-toggle-label" aria-live="polite">
+                        {{ "PT-BR" if content.language == "pt-BR" else "EN" }}
+                    </span>
+                    <svg
+                        class="language-toggle-chevron"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                    >
+                        <path d="M6 9.5 12 15.5 18 9.5" />
+                    </svg>
+                </button>
+
+                <ul
+                    class="language-menu"
+                    id="language-options"
+                    role="listbox"
+                    aria-label="{{ content.accessibility.language_selector }}"
+                >
+                    <li>
+                        <button
+                            class="language-option {% if content.language == 'pt-BR' %}is-selected{% endif %}"
+                            type="button"
+                            role="option"
+                            aria-selected="{{ 'true' if content.language == 'pt-BR' else 'false' }}"
+                            data-lang="pt-br"
+                            data-value="PT-BR"
+                            data-url="{{ url_for('main.index_pt_br') }}"
+                        >
+                            <span class="language-option-code">PT-BR</span>
+                            <span class="language-option-label">Português (Brasil)</span>
+                        </button>
+                    </li>
+                    <li>
+                        <button
+                            class="language-option {% if content.language != 'pt-BR' %}is-selected{% endif %}"
+                            type="button"
+                            role="option"
+                            aria-selected="{{ 'true' if content.language != 'pt-BR' else 'false' }}"
+                            data-lang="en"
+                            data-value="EN"
+                            data-url="{{ url_for('main.index') }}"
+                        >
+                            <span class="language-option-code">EN</span>
+                            <span class="language-option-label">English</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
 
             <button
                 class="theme-toggle"

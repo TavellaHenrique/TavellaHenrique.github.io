@@ -12,6 +12,7 @@ CONTENT = {
         "accessibility": {
             "home_link": "Henrique Tavella - Home",
             "main_navigation": "Main navigation",
+            "language_selector": "Select language",
             "theme_toggle": "Toggle color theme",
         },
         "navigation": {
@@ -153,6 +154,7 @@ CONTENT = {
         "accessibility": {
             "home_link": "Henrique Tavella - Início",
             "main_navigation": "Navegação principal",
+            "language_selector": "Selecionar idioma",
             "theme_toggle": "Alternar tema de cores",
         },
         "navigation": {
