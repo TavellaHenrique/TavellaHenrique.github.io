@@ -60,9 +60,9 @@
                     aria-label="{{ content.accessibility.language_selector }}"
                 >
                     <li>
-                        <button
+                        <a
                             class="language-option {% if content.language == 'pt-BR' %}is-selected{% endif %}"
-                            type="button"
+                            href="{{ url_for('main.index_pt_br') }}"
                             role="option"
                             aria-selected="{{ 'true' if content.language == 'pt-BR' else 'false' }}"
                             data-lang="pt-br"
@@ -71,12 +71,12 @@
                         >
                             <span class="language-option-code">PT-BR</span>
                             <span class="language-option-label">Português (Brasil)</span>
-                        </button>
+                        </a>
                     </li>
                     <li>
-                        <button
+                        <a
                             class="language-option {% if content.language != 'pt-BR' %}is-selected{% endif %}"
-                            type="button"
+                            href="{{ url_for('main.index') }}"
                             role="option"
                             aria-selected="{{ 'true' if content.language != 'pt-BR' else 'false' }}"
                             data-lang="en"
@@ -85,7 +85,7 @@
                         >
                             <span class="language-option-code">EN</span>
                             <span class="language-option-label">English</span>
-                        </button>
+                        </a>
                     </li>
                 </ul>
             </div>

@@ -132,9 +132,10 @@ if (languagePicker && languageToggle && languageMenu) {
     languageOptions.forEach((option) => {
         option.addEventListener("click", (event) => {
             event.stopPropagation();
+
             const selectedLanguage = option.dataset.lang;
-            const currentLocation = new URL(window.location.href);
-            const destination = new URL(option.dataset.url, window.location.href);
+            const destinationPath = option.getAttribute("href") || option.dataset.url;
+            const destination = new URL(destinationPath, window.location.href);
             const currentSection = getCurrentSection();
 
             destination.hash = currentSection.id;
