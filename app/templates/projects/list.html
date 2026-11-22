@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="projects-page section-container" aria-labelledby="projects-title">
+    <header class="projects-page-header">
+        <h1 id="projects-title">{{ page_title }}</h1>
+        <p>{{ site_text.projects.intro }}</p>
+    </header>
+
+    {% if projects %}
+        <div class="projects-grid">
+            {% for project in projects %}
+                <article class="project-list-card">
+                    {% if project.cover_image %}
+                        <figure class="project-list-cover">
+                            <img
+                                src="{{ url_for('static', filename=project.cover_image) }}"
+                                alt="{{ project.cover_alt }}"
+                                loading="lazy"
+                            >
+                            {% if project.cover_caption %}
+                                <figcaption>{{ project.cover_caption }}</figcaption>
+                            {% endif %}
+                        </figure>
+                    {% endif %}
+
+                    <div class="project-list-content">
+                        <div class="project-list-meta">
+                            <span class="project-status project-status-{{ project.status }}">
+                                {{ site_text.projects.status.get(project.status, site_text.projects.status.unknown) }}
+                            </span>
+
+                            {% if project.featured %}
+                                <span class="project-featured">
+                                    {{ site_text.projects.featured }}
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <h2>{{ project.title }}</h2>
+                        <p class="project-list-description">{{ project.description }}</p>
+
+                        {% if project.technologies %}
+                            <div class="project-list-technologies">
+                                <h3>{{ site_text.projects.technologies }}</h3>
+                                <ul>
+                                    {% for technology in project.technologies %}
+                                        <li>{{ technology }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        {% if project.tags %}
+                            <ul class="project-list-tags"aria-label="{{ site_text.projects.tags }}">
+                                {% for tag in project.tags %}
+                                    <li>{{ tag }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                        {% if project.links.github %}
+                            <div class="project-list-links">
+                                <a
+                                    href="{{ project.links.github }}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {{ site_text.projects.source_code }}
+                                    <span aria-hidden="true">↗</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="projects-empty">
+            {% if content.language == "pt-BR" %}
+                Nenhum projeto disponível no momento.
+            {% else %}
+                No projects are available yet.
+            {% endif %}
+        </p>
+    {% endif %}
+</section>
+{% endblock %}

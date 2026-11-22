@@ -1,6 +1,27 @@
 {
   "title": "Henrique Tavella | Portfolio",
   "description": "Henrique Tavella — Developer Portfolio",
-  "navigation": {"home": "Home", "projects": "Projects", "blog": "Blog", "about": "About"},
-  "footer": {"signature": "<< Allevat >>", "copyright": "© {year} Henrique Tavella"}
+  "navigation": {
+    "home": "Home",
+    "projects": "Projects",
+    "blog": "Blog",
+    "about": "About"
+  },
+  "projects": {
+    "intro": "A collection of projects exploring programming, software development, and practical problem-solving.",
+    "featured": "Featured",
+    "status": {
+      "completed": "Completed",
+      "in_progress": "In progress",
+      "archived": "Archived",
+      "unknown": "Unknown",
+      "tags": "Tags"
+    },
+    "technologies": "Technologies",
+    "source_code": "Source code"
+  },
+  "footer": {
+    "signature": "<< Allevat >>",
+    "copyright": "© {year} Henrique Tavella"
+  }
 }

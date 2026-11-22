@@ -36,28 +36,6 @@ def test_localized_routes_return_success(client, route):
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize(
-    ("route", "expected_title", "expected_message"),
-    [
-        ("/projects/", "Projects", "This page is currently under development."),
-        ("/blog/", "Blog", "This page is currently under development."),
-        ("/about/", "About", "This page is currently under development."),
-        ("/pt-br/projetos/", "Projetos", "Esta página está em desenvolvimento."),
-        ("/pt-br/blog/", "Blog", "Esta página está em desenvolvimento."),
-        ("/pt-br/sobre/", "Sobre", "Esta página está em desenvolvimento."),
-    ],
-)
-def test_placeholder_pages_display_localized_content(
-    client, route, expected_title, expected_message
-):
-    """Verify placeholder pages display the correct localized content."""
-    response = client.get(route)
-    html = response.get_data(as_text=True)
-
-    assert expected_title in html
-    assert expected_message in html
-
-
 def test_homepage_routes_preserve_existing_content(client):
     """Verify the existing localized homepages continue to render."""
     english_response = client.get("/")
@@ -121,3 +99,45 @@ def test_language_switcher_links_to_equivalent_page(
 
     assert f'href="{expected_pt_url}"' in html
     assert f'href="{expected_en_url}"' in html
+
+
+def test_projects_page_displays_project_metadata(client):
+    """Verify the project listing renders metadata from project files."""
+    response = client.get("/projects/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Pong By Allevat" in html
+    assert "A reproduction of the classic Pong game" in html
+    assert "Python 3.12" in html
+    assert "Pygame" in html
+    assert "Completed" in html
+    assert "Featured" in html
+
+
+def test_projects_page_displays_portuguese_metadata(client):
+    """Verify the Portuguese listing uses localized project content."""
+    response = client.get("/pt-br/projetos/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Pong By Allevat" in html
+    assert "Uma reprodução do clássico Pong" in html
+    assert "Concluído" in html
+    assert "Destaque" in html
+
+
+def test_projects_page_renders_project_cover(client):
+    """Verify the project cover uses a valid static URL."""
+    response = client.get("/projects/")
+    html = response.get_data(as_text=True)
+
+    assert "/static/images/pong-by-allevat.svg" in html
+
+
+def test_projects_page_does_not_render_empty_github_link(client):
+    """Verify links with missing metadata are not rendered."""
+    response = client.get("/projects/")
+    html = response.get_data(as_text=True)
+
+    assert "Source code" not in html

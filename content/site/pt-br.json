@@ -1,6 +1,27 @@
 {
   "title": "Henrique Tavella | Portfólio",
   "description": "Portfólio de Henrique Tavella",
-  "navigation": {"home": "Início", "projects": "Projetos", "blog": "Blog", "about": "Sobre"},
-  "footer": {"signature": "<< Allevat >>", "copyright": "© {year} Henrique Tavella"}
+  "navigation": {
+    "home": "Início",
+    "projects": "Projetos",
+    "blog": "Blog",
+    "about": "Sobre"
+  },
+  "projects": {
+    "intro": "Uma coleção de projetos que exploram programação, desenvolvimento de software e resolução de problemas práticos.",
+    "featured": "Destaque",
+    "status": {
+      "completed": "Concluído",
+      "in_progress": "Em andamento",
+      "archived": "Arquivado",
+      "unknown": "Desconhecido",
+      "tags": "Etiquetas"
+    },
+    "technologies": "Tecnologias",
+    "source_code": "Código-fonte"
+  },
+  "footer": {
+    "signature": "<< Allevat >>",
+    "copyright": "© {year} Henrique Tavella"
+  }
 }
