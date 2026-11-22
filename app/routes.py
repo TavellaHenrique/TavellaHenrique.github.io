@@ -198,6 +198,72 @@ def get_localized_posts(language: str) -> list[dict]:
     return localized_posts
 
 
+def find_post_by_slug(slug: str, language: str) -> dict | None:
+    """Find a published post by its localized slug."""
+    language_key = "pt-br" if language == "pt-br" else "en"
+
+    for post in content_loader.load_posts(include_drafts=False):
+        localized_slug = post.get("slug", {}).get(language_key)
+
+        if localized_slug == slug:
+            return post
+
+    return None
+
+
+def get_post_details(post: dict, language: str) -> dict:
+    """Prepare localized post metadata and rendered Markdown content."""
+    language_key = "pt-br" if language == "pt-br" else "en"
+    cover_image = post.get("cover_image")
+
+    # Convert repository paths into paths relative to Flask's static folder.
+    if cover_image and cover_image.startswith("app/static/"):
+        cover_image = cover_image.removeprefix("app/static/")
+
+    markdown_content = content_loader.load_post_markdown(
+        post,
+        language_key,
+    )
+
+    related_project = None
+    related_project_id = post.get("related_project_id")
+
+    if related_project_id:
+        for project_data in content_loader.load_projects():
+            if project_data.get("id") != related_project_id:
+                continue
+
+            project_slug = project_data.get("slug", {}).get(language_key)
+            project_title = project_data.get("title", {}).get(language_key)
+
+            if project_slug and project_title:
+                project_endpoint = (
+                    "main.project_detail" if language_key == "en" else "main.project_detail_pt_br"
+                )
+
+                related_project = {
+                    "title": project_title,
+                    "url": url_for(project_endpoint, slug=project_slug),
+                }
+
+            break
+
+    return {
+        "id": post["id"],
+        "slug": post.get("slug", {}).get(language_key),
+        "title": post.get("title", {}).get(language_key),
+        "description": post.get("description", {}).get(language_key, ""),
+        "published_at": post.get("published_at"),
+        "updated_at": post.get("updated_at"),
+        "tags": post.get("tags", []),
+        "cover_image": cover_image,
+        "featured": post.get("featured", False),
+        "related_project_id": post.get("related_project_id"),
+        "content_html": markdown_renderer.render(markdown_content),
+        "related_project": related_project,
+    }
+
+
 @main.route("/")
 def index():
     """Render the English homepage."""
@@ -315,6 +381,66 @@ def blog_pt_br():
         "blog",
         "blog/list.html",
         extra_context={"posts": get_localized_posts("pt-br")},
+    )
+
+
+@main.route("/blog/<slug>/")
+def post_detail(slug: str):
+    """Display an English blog post."""
+    post_data = find_post_by_slug(slug, "en")
+
+    if post_data is None:
+        abort(404)
+
+    post = get_post_details(post_data, "en")
+    portuguese_slug = post_data.get("slug", {}).get("pt-br")
+
+    language_urls = {
+        "en": url_for("main.post_detail", slug=slug),
+        "pt-br": (
+            url_for("main.post_detail_pt_br", slug=portuguese_slug)
+            if portuguese_slug
+            else url_for("main.blog_pt_br")
+        ),
+    }
+
+    return render_page(
+        "en",
+        "blog",
+        "blog/detail.html",
+        extra_context={
+            "post": post,
+            "language_urls": language_urls,
+        },
+    )
+
+
+@main.route("/pt-br/blog/<slug>/")
+def post_detail_pt_br(slug: str):
+    """Display a Portuguese blog post."""
+    post_data = find_post_by_slug(slug, "pt-br")
+
+    if post_data is None:
+        abort(404)
+
+    post = get_post_details(post_data, "pt-br")
+    english_slug = post_data.get("slug", {}).get("en")
+
+    language_urls = {
+        "en": (
+            url_for("main.post_detail", slug=english_slug) if english_slug else url_for("main.blog")
+        ),
+        "pt-br": url_for("main.post_detail_pt_br", slug=slug),
+    }
+
+    return render_page(
+        "pt-br",
+        "blog",
+        "blog/detail.html",
+        extra_context={
+            "post": post,
+            "language_urls": language_urls,
+        },
     )
 
 

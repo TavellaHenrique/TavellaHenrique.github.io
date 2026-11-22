@@ -12,13 +12,13 @@
     "en": "An example post.",
     "pt-br": "Um artigo de exemplo."
   },
-  "status": "draft",
+  "status": "published",
   "language": "en",
   "published_at": "2026-11-22",
-  "updated_at": null,
+  "updated_at": "2026-11-23",
   "tags": ["programming"],
   "cover_image": null,
-  "related_project_id": null,
+  "related_project_id": "pong-by-allevat",
   "featured": false,
   "content_files": {
     "en": "en.md",

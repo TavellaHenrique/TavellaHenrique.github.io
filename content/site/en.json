@@ -30,7 +30,11 @@
     "featured": "Featured",
     "tags": "Tags",
     "read_more": "Read article",
-    "empty": "No articles published yet."
+    "empty": "No articles published yet.",
+    "back_to_blog": "Back to blog",
+    "published_at": "Published",
+    "updated_at": "Updated",
+    "related_project": "Related project"
   },
   "footer": {
     "signature": "<< Allevat >>",

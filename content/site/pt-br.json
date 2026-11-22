@@ -30,7 +30,11 @@
     "featured": "Destaque",
     "tags": "Tags",
     "read_more": "Ler artigo",
-    "empty": "Nenhum artigo publicado ainda."
+    "empty": "Nenhum artigo publicado ainda.",
+    "back_to_blog": "Voltar ao blog",
+    "published_at": "Publicado em",
+    "updated_at": "Atualizado em",
+    "related_project": "Projeto relacionado"
   },
   "footer": {
     "signature": "<< Allevat >>",

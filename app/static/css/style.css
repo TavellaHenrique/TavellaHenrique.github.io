@@ -1486,3 +1486,142 @@ button:focus-visible {
         padding-top: 2rem;
     }
 }
+
+/* Blog article page */
+.blog-post-detail {
+    max-width: 900px;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.blog-post-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    text-decoration: none;
+}
+
+.blog-post-detail-header {
+    margin-bottom: 2rem;
+}
+
+.blog-post-detail-header h1 {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    line-height: 1.2;
+}
+
+.blog-post-detail-description {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    max-width: 750px;
+}
+
+.blog-post-detail-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    font-size: 0.9rem;
+}
+
+.blog-post-detail-dates div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.blog-post-detail-dates span {
+    color: var(--muted-foreground);
+}
+
+.blog-post-detail-cover {
+    margin: 0 0 2.5rem;
+}
+
+.blog-post-detail-cover img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+.blog-post-detail-content {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.blog-post-detail-content h2 {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.blog-post-detail-content h3 {
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+.blog-post-detail-content p {
+    margin-bottom: 1.25rem;
+}
+
+.blog-post-detail-content ul,
+.blog-post-detail-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.blog-post-detail-content li {
+    margin-bottom: 0.5rem;
+}
+
+.blog-post-detail-content pre {
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.blog-post-detail-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.blog-post-related-project {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.blog-post-detail-footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.blog-post-detail-footer a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.blog-post-detail-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive article layout */
+@media (max-width: 760px) {
+    .blog-post-detail {
+        padding-top: 1.5rem;
+    }
+
+    .blog-post-detail-header h1 {
+        font-size: 2rem;
+    }
+
+    .blog-post-detail-dates {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

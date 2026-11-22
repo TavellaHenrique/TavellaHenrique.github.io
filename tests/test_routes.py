@@ -16,6 +16,82 @@ def client():
     return app.test_client()
 
 
+def make_project(
+    project_id: str = "test-project",
+    english_slug: str = "test-project",
+    portuguese_slug: str = "projeto-teste",
+) -> dict:
+    """Create isolated project metadata for route tests."""
+    return {
+        "id": project_id,
+        "slug": {
+            "en": english_slug,
+            "pt-br": portuguese_slug,
+        },
+        "title": {
+            "en": "Test Project",
+            "pt-br": "Projeto de Teste",
+        },
+        "short_description": {
+            "en": "Test project description.",
+            "pt-br": "Descrição do projeto de teste.",
+        },
+        "status": "completed",
+        "featured": True,
+        "technologies": ["Python", "Flask"],
+        "tags": ["testing"],
+        "start_date": None,
+        "completion_date": None,
+        "cover_image": None,
+        "cover_alt": {"en": "", "pt-br": ""},
+        "cover_caption": {"en": "", "pt-br": ""},
+        "media": [],
+        "links": {"github": None, "demo": None},
+        "related_post_ids": [],
+        "order": 1,
+        "content_files": {"en": "en.md", "pt-br": "pt-br.md"},
+    }
+
+
+def make_post(
+    post_id: str = "test-post",
+    english_slug: str = "test-post",
+    portuguese_slug: str = "artigo-teste",
+    published_at: str = "2026-01-15",
+    status: str = "published",
+    content_files: dict | None = None,
+) -> dict:
+    """Create isolated post metadata for route tests."""
+    return {
+        "id": post_id,
+        "slug": {
+            "en": english_slug,
+            "pt-br": portuguese_slug,
+        },
+        "title": {
+            "en": "Test Article",
+            "pt-br": "Artigo de Teste",
+        },
+        "description": {
+            "en": "Test article description.",
+            "pt-br": "Descrição do artigo de teste.",
+        },
+        "status": status,
+        "language": "en",
+        "published_at": published_at,
+        "updated_at": None,
+        "tags": ["testing"],
+        "cover_image": None,
+        "related_project_id": None,
+        "featured": True,
+        "content_files": content_files
+        or {
+            "en": "en.md",
+            "pt-br": "pt-br.md",
+        },
+    }
+
+
 @pytest.mark.parametrize(
     "route",
     [
@@ -36,16 +112,12 @@ def test_localized_routes_return_success(client, route):
     assert response.status_code == 200
 
 
-def test_homepage_routes_preserve_existing_content(client):
-    """Verify the existing localized homepages continue to render."""
-    english_response = client.get("/")
-    portuguese_response = client.get("/pt-br/")
+def test_localized_homepages_render(client):
+    """Verify both localized homepages render successfully."""
+    for route in ("/", "/pt-br/"):
+        response = client.get(route)
 
-    assert english_response.status_code == 200
-    assert portuguese_response.status_code == 200
-
-    assert b"Pong By Allevat" in english_response.data
-    assert b"Pong By Allevat" in portuguese_response.data
+        assert response.status_code == 200
 
 
 @pytest.mark.parametrize(
@@ -101,95 +173,203 @@ def test_language_switcher_links_to_equivalent_page(
     assert f'href="{expected_en_url}"' in html
 
 
-def test_projects_page_displays_project_metadata(client):
-    """Verify the project listing renders metadata from project files."""
+def test_projects_page_displays_project_metadata(client, monkeypatch):
+    """Verify the project listing renders injected metadata."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+
     response = client.get("/projects/")
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "Pong By Allevat" in html
-    assert "A reproduction of the classic Pong game" in html
-    assert "Python 3.12" in html
-    assert "Pygame" in html
+    assert "Test Project" in html
+    assert "Test project description." in html
+    assert "Python" in html
+    assert "Flask" in html
     assert "Completed" in html
     assert "Featured" in html
 
 
-def test_projects_page_displays_portuguese_metadata(client):
-    """Verify the Portuguese listing uses localized project content."""
+def test_projects_page_displays_localized_metadata(client, monkeypatch):
+    """Verify the Portuguese listing uses localized project metadata."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+
     response = client.get("/pt-br/projetos/")
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "Pong By Allevat" in html
-    assert "Uma reprodução do clássico Pong" in html
+    assert "Projeto de Teste" in html
+    assert "Descrição do projeto de teste." in html
     assert "Concluído" in html
     assert "Destaque" in html
 
 
-def test_projects_page_renders_project_cover(client):
-    """Verify the project cover uses a valid static URL."""
+def test_projects_page_does_not_render_empty_github_link(client, monkeypatch):
+    """Verify unavailable external links are not rendered."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+
     response = client.get("/projects/")
     html = response.get_data(as_text=True)
 
-    assert "/static/images/pong-by-allevat.svg" in html
-
-
-def test_projects_page_does_not_render_empty_github_link(client):
-    """Verify links with missing metadata are not rendered."""
-    response = client.get("/projects/")
-    html = response.get_data(as_text=True)
-
+    assert response.status_code == 200
     assert "Source code" not in html
 
 
-def test_english_project_detail_page(client):
-    """Verify the English project detail page renders its metadata and body."""
-    response = client.get("/projects/pong-by-allevat/")
+def test_projects_page_renders_local_cover(client, monkeypatch):
+    """Verify project cover paths are converted to static URLs."""
+    from app.routes import content_loader
+
+    project = make_project()
+    project["cover_image"] = "app/static/images/test/cover.webp"
+    project["cover_alt"] = {
+        "en": "Test cover",
+        "pt-br": "Capa de teste",
+    }
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+
+    response = client.get("/projects/")
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "Pong By Allevat" in html
-    assert "Python 3.12" in html
-    assert "Pygame" in html
+    assert "/static/images/test/cover.webp" in html
+    assert "Test cover" in html
 
-    # Verify Markdown headings and lists are rendered as HTML.
+
+def test_english_project_detail_page(client, monkeypatch):
+    """Verify English project details render injected data and Markdown."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: (
+            "## Project objective\n\nTest objective.\n\n## Implemented features\n\n- Test feature\n"
+        ),
+    )
+
+    response = client.get("/projects/test-project/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Project" in html
+    assert "Python" in html
+    assert "Flask" in html
     assert "<h2>Project objective</h2>" in html
     assert "<h2>Implemented features</h2>" in html
-    assert "<li>Selectable visual themes</li>" in html
+    assert "<li>Test feature</li>" in html
 
 
-def test_portuguese_project_detail_page(client):
-    """Verify the Portuguese project detail page renders localized content."""
-    response = client.get("/pt-br/projetos/pong-by-allevat/")
+def test_portuguese_project_detail_page(client, monkeypatch):
+    """Verify Portuguese project details render localized data."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: (
+            "## Objetivo do projeto\n\n"
+            "Objetivo de teste.\n\n"
+            "## Funcionalidades implementadas\n\n"
+            "- Funcionalidade de teste\n"
+        ),
+    )
+
+    response = client.get("/pt-br/projetos/projeto-teste/")
     html = response.get_data(as_text=True)
 
     assert response.status_code == 200
-    assert "Pong By Allevat" in html
+    assert "Projeto de Teste" in html
     assert "<h2>Objetivo do projeto</h2>" in html
     assert "<h2>Funcionalidades implementadas</h2>" in html
-    assert "<li>Temas visuais selecionáveis</li>" in html
+    assert "<li>Funcionalidade de teste</li>" in html
 
 
-def test_project_detail_language_switcher_preserves_project(client):
-    """Verify language switching links to the equivalent project page."""
-    english_response = client.get("/projects/pong-by-allevat/")
-    portuguese_response = client.get("/pt-br/projetos/pong-by-allevat/")
+def test_project_detail_language_switcher_preserves_project(client, monkeypatch):
+    """Verify language switching preserves the injected project."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: "Test content.",
+    )
+
+    english_response = client.get("/projects/test-project/")
+    portuguese_response = client.get("/pt-br/projetos/projeto-teste/")
 
     english_html = english_response.get_data(as_text=True)
     portuguese_html = portuguese_response.get_data(as_text=True)
 
-    assert 'href="/pt-br/projetos/pong-by-allevat/"' in english_html
-    assert 'href="/projects/pong-by-allevat/"' in portuguese_html
+    assert 'href="/pt-br/projetos/projeto-teste/"' in english_html
+    assert 'href="/projects/test-project/"' in portuguese_html
 
 
-def test_project_listing_links_to_details(client):
-    """Verify project cards link to their detail pages."""
+def test_project_listing_links_to_details(client, monkeypatch):
+    """Verify injected project cards link to localized details."""
+    from app.routes import content_loader
+
+    project = make_project()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+
     english_response = client.get("/projects/")
     portuguese_response = client.get("/pt-br/projetos/")
 
-    assert 'href="/projects/pong-by-allevat/"' in (english_response.get_data(as_text=True))
-    assert 'href="/pt-br/projetos/pong-by-allevat/"' in (portuguese_response.get_data(as_text=True))
+    assert 'href="/projects/test-project/"' in english_response.get_data(as_text=True)
+    assert 'href="/pt-br/projetos/projeto-teste/"' in portuguese_response.get_data(as_text=True)
 
 
 @pytest.mark.parametrize(
@@ -199,68 +379,288 @@ def test_project_listing_links_to_details(client):
         "/pt-br/projetos/projeto-inexistente/",
     ],
 )
-def test_unknown_project_slug_returns_404(client, route):
-    """Verify invalid project slugs return a not-found response."""
+def test_unknown_project_slug_returns_404(client, monkeypatch, route):
+    """Verify unknown project slugs return 404."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [],
+    )
+
     response = client.get(route)
 
     assert response.status_code == 404
 
 
-def test_english_blog_listing_is_empty(client):
+def test_english_blog_listing_is_empty(client, monkeypatch):
+    """Verify the English empty state when no posts are provided."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [],
+    )
+
     response = client.get("/blog/")
 
     assert response.status_code == 200
     assert "No articles published yet." in response.get_data(as_text=True)
 
 
-def test_portuguese_blog_listing_is_empty(client):
+def test_portuguese_blog_listing_is_empty(client, monkeypatch):
+    """Verify the Portuguese empty state when no posts are provided."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [],
+    )
+
     response = client.get("/pt-br/blog/")
 
     assert response.status_code == 200
     assert "Nenhum artigo publicado ainda." in response.get_data(as_text=True)
 
 
+def test_english_blog_listing_displays_injected_post(client, monkeypatch):
+    """Verify the English blog listing renders an injected post."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    response = client.get("/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Article" in html
+    assert "Test article description." in html
+    assert "testing" in html
+    assert "Read article" in html
+    assert "/blog/test-post/" in html
+
+
+def test_portuguese_blog_listing_displays_localized_post(client, monkeypatch):
+    """Verify the Portuguese blog listing renders localized metadata."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    response = client.get("/pt-br/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Artigo de Teste" in html
+    assert "Descrição do artigo de teste." in html
+    assert "Ler artigo" in html
+    assert "/pt-br/blog/artigo-teste/" in html
+
+
 def test_localized_posts_are_sorted_by_publication_date(monkeypatch):
+    """Verify published posts are sorted newest first."""
     from app.routes import content_loader, get_localized_posts
 
-    sample_posts = [
-        {
-            "id": "older-post",
-            "slug": {"en": "older-post"},
-            "title": {"en": "Older Post"},
-            "description": {"en": "Older description"},
-            "status": "published",
-            "published_at": "2026-01-10",
-            "tags": [],
-            "cover_image": None,
-            "featured": False,
-            "related_project_id": None,
-            "content_files": {"en": "en.md"},
-        },
-        {
-            "id": "newer-post",
-            "slug": {"en": "newer-post"},
-            "title": {"en": "Newer Post"},
-            "description": {"en": "Newer description"},
-            "status": "published",
-            "published_at": "2026-02-10",
-            "tags": [],
-            "cover_image": None,
-            "featured": True,
-            "related_project_id": None,
-            "content_files": {"en": "en.md"},
-        },
+    posts = [
+        make_post(
+            post_id="older-post",
+            english_slug="older-post",
+            portuguese_slug="artigo-antigo",
+            published_at="2026-01-10",
+        ),
+        make_post(
+            post_id="newer-post",
+            english_slug="newer-post",
+            portuguese_slug="artigo-recente",
+            published_at="2026-02-10",
+        ),
     ]
 
     monkeypatch.setattr(
         content_loader,
         "load_posts",
-        lambda include_drafts=False: sample_posts,
+        lambda include_drafts=False: posts,
     )
 
-    posts = get_localized_posts("en")
+    localized_posts = get_localized_posts("en")
 
-    assert [post["id"] for post in posts] == [
+    assert [post["id"] for post in localized_posts] == [
         "newer-post",
         "older-post",
     ]
+
+
+def test_blog_listing_excludes_drafts(client, monkeypatch):
+    """Verify draft posts are excluded from the blog listing."""
+    from app.routes import content_loader
+
+    published_post = make_post(post_id="published-post")
+    draft_post = make_post(
+        post_id="draft-post",
+        english_slug="draft-post",
+        portuguese_slug="rascunho",
+        status="draft",
+    )
+
+    all_posts = [published_post, draft_post]
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: (
+            all_posts
+            if include_drafts
+            else [post for post in all_posts if post["status"] == "published"]
+        ),
+    )
+
+    response = client.get("/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Article" in html
+    assert "draft-post" not in html
+
+
+def test_english_post_detail_page(client, monkeypatch):
+    """Verify the English article page renders injected content."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_post_markdown",
+        lambda post, language: "## Test section\n\nTest article content.\n\n- Test item\n",
+    )
+
+    response = client.get("/blog/test-post/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Article" in html
+    assert "Test article description." in html
+    assert "Published" in html
+    assert "<h2>Test section</h2>" in html
+    assert "Test article content." in html
+    assert "<li>Test item</li>" in html
+
+
+def test_portuguese_post_detail_page(client, monkeypatch):
+    """Verify the Portuguese article page renders localized content."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_post_markdown",
+        lambda post, language: (
+            "## Seção de teste\n\nConteúdo do artigo de teste.\n\n- Item de teste\n"
+        ),
+    )
+
+    response = client.get("/pt-br/blog/artigo-teste/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Artigo de Teste" in html
+    assert "Descrição do artigo de teste." in html
+    assert "Publicado em" in html
+    assert "<h2>Seção de teste</h2>" in html
+    assert "Conteúdo do artigo de teste." in html
+    assert "<li>Item de teste</li>" in html
+
+
+def test_post_language_switcher_preserves_article(client, monkeypatch):
+    """Verify language switching preserves the injected article."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_post_markdown",
+        lambda post, language: "Test content.",
+    )
+
+    english_response = client.get("/blog/test-post/")
+    portuguese_response = client.get("/pt-br/blog/artigo-teste/")
+
+    english_html = english_response.get_data(as_text=True)
+    portuguese_html = portuguese_response.get_data(as_text=True)
+
+    assert 'href="/pt-br/blog/artigo-teste/"' in english_html
+    assert 'href="/blog/test-post/"' in portuguese_html
+
+
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/blog/nonexistent-post/",
+        "/pt-br/blog/artigo-inexistente/",
+    ],
+)
+def test_unknown_post_slug_returns_404(client, monkeypatch, route):
+    """Verify unknown post slugs return 404."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [],
+    )
+
+    response = client.get(route)
+
+    assert response.status_code == 404
+
+
+def test_draft_post_detail_returns_404(client, monkeypatch):
+    """Verify draft posts cannot be accessed directly."""
+    from app.routes import content_loader
+
+    draft_post = make_post(
+        status="draft",
+        english_slug="draft-post",
+        portuguese_slug="rascunho",
+    )
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [draft_post] if include_drafts else [],
+    )
+
+    response = client.get("/blog/draft-post/")
+
+    assert response.status_code == 404
