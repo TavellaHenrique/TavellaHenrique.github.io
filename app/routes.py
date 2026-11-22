@@ -148,6 +148,56 @@ def get_project_details(project: dict, language: str) -> dict:
     }
 
 
+def get_localized_posts(language: str) -> list[dict]:
+    """Return published posts with metadata localized for the requested language."""
+    language_key = "pt-br" if language == "pt-br" else "en"
+    posts = content_loader.load_posts(include_drafts=False)
+    localized_posts = []
+
+    for post in posts:
+        content_files = post.get("content_files", {})
+
+        # Only include posts with content available in the requested language.
+        if language_key not in content_files:
+            continue
+
+        slug = post.get("slug", {}).get(language_key)
+        title = post.get("title", {}).get(language_key)
+
+        # A localized URL and title are required for listing a post.
+        if not slug or not title:
+            continue
+
+        cover_image = post.get("cover_image")
+
+        # Convert repository paths into paths relative to Flask's static folder.
+        if cover_image and cover_image.startswith("app/static/"):
+            cover_image = cover_image.removeprefix("app/static/")
+
+        localized_posts.append(
+            {
+                "id": post["id"],
+                "slug": slug,
+                "title": title,
+                "description": post.get("description", {}).get(language_key, ""),
+                "published_at": post.get("published_at"),
+                "updated_at": post.get("updated_at"),
+                "tags": post.get("tags", []),
+                "cover_image": cover_image,
+                "featured": post.get("featured", False),
+                "related_project_id": post.get("related_project_id"),
+            }
+        )
+
+    # Sort published posts by date, newest first.
+    localized_posts.sort(
+        key=lambda post: post.get("published_at") or "",
+        reverse=True,
+    )
+
+    return localized_posts
+
+
 @main.route("/")
 def index():
     """Render the English homepage."""
@@ -248,14 +298,24 @@ def project_detail_pt_br(slug: str):
 
 @main.route("/blog/")
 def blog():
-    """Render the English blog page placeholder."""
-    return render_page("en", "blog")
+    """Display the English blog listing."""
+    return render_page(
+        "en",
+        "blog",
+        "blog/list.html",
+        extra_context={"posts": get_localized_posts("en")},
+    )
 
 
 @main.route("/pt-br/blog/")
 def blog_pt_br():
-    """Render the Brazilian Portuguese blog page placeholder."""
-    return render_page("pt-br", "blog")
+    """Display the Portuguese blog listing."""
+    return render_page(
+        "pt-br",
+        "blog",
+        "blog/list.html",
+        extra_context={"posts": get_localized_posts("pt-br")},
+    )
 
 
 @main.route("/about/")

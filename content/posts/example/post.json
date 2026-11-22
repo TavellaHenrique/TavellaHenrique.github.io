@@ -1,0 +1,27 @@
+{
+  "id": "example",
+  "slug": {
+    "en": "example",
+    "pt-br": "exemplo"
+  },
+  "title": {
+    "en": "Example Post",
+    "pt-br": "Artigo de Exemplo"
+  },
+  "description": {
+    "en": "An example post.",
+    "pt-br": "Um artigo de exemplo."
+  },
+  "status": "draft",
+  "language": "en",
+  "published_at": "2026-11-22",
+  "updated_at": null,
+  "tags": ["programming"],
+  "cover_image": null,
+  "related_project_id": null,
+  "featured": false,
+  "content_files": {
+    "en": "en.md",
+    "pt-br": "pt-br.md"
+  }
+}

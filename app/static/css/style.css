@@ -1369,3 +1369,120 @@ button:focus-visible {
         transition-duration: 0.01ms !important;
     }
 }
+
+/* Blog listing layout */
+.blog-listing {
+    padding-top: 3rem;
+    padding-bottom: 4rem;
+}
+
+.blog-listing-header {
+    margin-bottom: 2rem;
+}
+
+.blog-listing-header h1 {
+    margin-bottom: 0.75rem;
+}
+
+.blog-listing-header p {
+    max-width: 700px;
+}
+
+/* Post card grid */
+.blog-post-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.blog-post-card {
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-background);
+}
+
+.blog-post-cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+}
+
+.blog-post-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.25rem;
+}
+
+.blog-post-card time {
+    font-size: 0.85rem;
+    color: var(--muted-foreground);
+}
+
+.blog-post-card h2 {
+    margin: 0;
+    font-size: 1.35rem;
+}
+
+.blog-post-card h2 a {
+    color: var(--foreground);
+    text-decoration: none;
+}
+
+.blog-post-card h2 a:hover {
+    text-decoration: underline;
+}
+
+.blog-post-description {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.blog-post-featured-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.blog-post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.blog-post-tags li {
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    font-size: 0.8rem;
+}
+
+.blog-post-detail-link {
+    margin-top: 0.25rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.blog-post-detail-link:hover {
+    text-decoration: underline;
+}
+
+.blog-empty-state {
+    padding: 2rem 0;
+}
+
+/* Responsive layout */
+@media (max-width: 760px) {
+    .blog-post-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .blog-listing {
+        padding-top: 2rem;
+    }
+}

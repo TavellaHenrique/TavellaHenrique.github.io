@@ -204,3 +204,63 @@ def test_unknown_project_slug_returns_404(client, route):
     response = client.get(route)
 
     assert response.status_code == 404
+
+
+def test_english_blog_listing_is_empty(client):
+    response = client.get("/blog/")
+
+    assert response.status_code == 200
+    assert "No articles published yet." in response.get_data(as_text=True)
+
+
+def test_portuguese_blog_listing_is_empty(client):
+    response = client.get("/pt-br/blog/")
+
+    assert response.status_code == 200
+    assert "Nenhum artigo publicado ainda." in response.get_data(as_text=True)
+
+
+def test_localized_posts_are_sorted_by_publication_date(monkeypatch):
+    from app.routes import content_loader, get_localized_posts
+
+    sample_posts = [
+        {
+            "id": "older-post",
+            "slug": {"en": "older-post"},
+            "title": {"en": "Older Post"},
+            "description": {"en": "Older description"},
+            "status": "published",
+            "published_at": "2026-01-10",
+            "tags": [],
+            "cover_image": None,
+            "featured": False,
+            "related_project_id": None,
+            "content_files": {"en": "en.md"},
+        },
+        {
+            "id": "newer-post",
+            "slug": {"en": "newer-post"},
+            "title": {"en": "Newer Post"},
+            "description": {"en": "Newer description"},
+            "status": "published",
+            "published_at": "2026-02-10",
+            "tags": [],
+            "cover_image": None,
+            "featured": True,
+            "related_project_id": None,
+            "content_files": {"en": "en.md"},
+        },
+    ]
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: sample_posts,
+    )
+
+    posts = get_localized_posts("en")
+
+    assert [post["id"] for post in posts] == [
+        "newer-post",
+        "older-post",
+    ]

@@ -24,6 +24,14 @@
     "live_demo": "Demonstração",
     "view_details": "Ver projeto"
   },
+  "blog": {
+    "title": "Blog",
+    "intro": "Artigos, anotações e aprendizados sobre desenvolvimento de software.",
+    "featured": "Destaque",
+    "tags": "Tags",
+    "read_more": "Ler artigo",
+    "empty": "Nenhum artigo publicado ainda."
+  },
   "footer": {
     "signature": "<< Allevat >>",
     "copyright": "© {year} Henrique Tavella"
