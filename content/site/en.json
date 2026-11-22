@@ -34,7 +34,9 @@
     "back_to_blog": "Back to blog",
     "published_at": "Published",
     "updated_at": "Updated",
-    "related_project": "Related project"
+    "related_project": "Related project",
+    "tag_heading": "Posts tagged",
+    "tag_intro": "Articles associated with this tag."
   },
   "footer": {
     "signature": "<< Allevat >>",

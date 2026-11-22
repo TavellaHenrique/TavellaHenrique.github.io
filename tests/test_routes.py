@@ -664,3 +664,130 @@ def test_draft_post_detail_returns_404(client, monkeypatch):
     response = client.get("/blog/draft-post/")
 
     assert response.status_code == 404
+
+
+def test_english_tag_page_filters_posts(client, monkeypatch):
+    """Verify tag pages display only matching posts."""
+    from app.routes import content_loader
+
+    tagged_post = make_post(post_id="tagged-post")
+    unrelated_post = make_post(
+        post_id="unrelated-post",
+        english_slug="unrelated-post",
+        portuguese_slug="post-sem-tag",
+    )
+    unrelated_post["tags"] = ["python"]
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [tagged_post, unrelated_post],
+    )
+
+    response = client.get("/blog/tags/testing/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Article" in html
+    assert "unrelated-post" not in html
+
+
+def test_portuguese_tag_page_filters_posts(client, monkeypatch):
+    """Verify the Portuguese tag page displays matching posts."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    response = client.get("/pt-br/blog/tags/testing/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Artigo de Teste" in html
+    assert "Descrição do artigo de teste." in html
+
+
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/blog/tags/nonexistent/",
+        "/pt-br/blog/tags/inexistente/",
+    ],
+)
+def test_unknown_tag_returns_404(client, monkeypatch, route):
+    """Verify tags without published posts return 404."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [],
+    )
+
+    response = client.get(route)
+
+    assert response.status_code == 404
+
+
+def test_blog_listing_tags_link_to_tag_pages(client, monkeypatch):
+    """Verify post tags link to their localized tag pages."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    english_response = client.get("/blog/")
+    portuguese_response = client.get("/pt-br/blog/")
+
+    assert 'href="/blog/tags/testing/"' in english_response.get_data(as_text=True)
+    assert 'href="/pt-br/blog/tags/testing/"' in portuguese_response.get_data(as_text=True)
+
+
+def test_tag_language_switcher_preserves_tag(client, monkeypatch):
+    """Verify tag language switching preserves the tag when available."""
+    from app.routes import content_loader
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    english_response = client.get("/blog/tags/testing/")
+    portuguese_response = client.get("/pt-br/blog/tags/testing/")
+
+    assert 'href="/pt-br/blog/tags/testing/"' in english_response.get_data(as_text=True)
+    assert 'href="/blog/tags/testing/"' in portuguese_response.get_data(as_text=True)
+
+
+def test_tag_language_switcher_falls_back_to_blog(client, monkeypatch):
+    """Verify language switching falls back when the tag has no translation."""
+    from app.routes import content_loader
+
+    post = make_post(
+        content_files={"en": "en.md"},
+    )
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+
+    response = client.get("/blog/tags/testing/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'href="/blog/"' in html

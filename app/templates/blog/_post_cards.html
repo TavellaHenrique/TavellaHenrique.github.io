@@ -1,0 +1,62 @@
+{% if posts %}
+    <div class="blog-post-grid">
+        {% for post in posts %}
+            {% set post_url = '/blog/' ~ post.slug ~ '/' if content.language == 'en' else '/pt-br/blog/' ~ post.slug ~ '/' %}
+
+            <article class="blog-post-card{% if post.featured %} blog-post-card-featured{% endif %}">
+                {% if post.cover_image %}
+                    <img
+                        class="blog-post-cover"
+                        src="{{ url_for('static', filename=post.cover_image) }}"
+                        alt=""
+                        loading="lazy"
+                    >
+                {% endif %}
+
+                <div class="blog-post-card-content">
+                    {% if post.featured %}
+                        <span class="blog-post-featured-label">
+                            {{ site_text.blog.featured }}
+                        </span>
+                    {% endif %}
+
+                    <time datetime="{{ post.published_at }}">
+                        {{ post.published_at }}
+                    </time>
+
+                    <h2>
+                        <a href="{{ post_url }}">
+                            {{ post.title }}
+                        </a>
+                    </h2>
+
+                    {% if post.description %}
+                        <p class="blog-post-description">
+                            {{ post.description }}
+                        </p>
+                    {% endif %}
+
+                    {% if post.tags %}
+                        <ul class="blog-post-tags" aria-label="{{ site_text.blog.tags }}">
+                            {% for post_tag in post.tags %}
+                                <li>
+                                    <a
+                                        href="{{ url_for('main.blog_tag', tag=post_tag) if content.language == 'en' else url_for('main.blog_tag_pt_br', tag=post_tag) }}"
+                                    >
+                                        {{ post_tag }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <a class="blog-post-detail-link" href="{{ post_url }}">
+                        {{ site_text.blog.read_more }}
+                    </a>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="blog-empty-state">{{ site_text.blog.empty }}</p>
+{% endif %}
