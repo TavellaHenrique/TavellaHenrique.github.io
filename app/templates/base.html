@@ -19,15 +19,27 @@
 </head>
 <body>
     <header class="site-header">
-        <a class="logo" href="#home" aria-label="{{ content.accessibility.home_link }}">
+        <a
+            class="logo"
+            href="{{ url_for('main.index') if content.language == 'en' else url_for('main.index_pt_br') }}"
+            aria-label="{{ content.accessibility.home_link }}"
+        >
             {{ content.site.brand }}
         </a>
 
-        <nav class="main-navigation" aria-label="{{ content.accessibility.main_navigation }}">
-            <a href="#home">{{ content.navigation.home }}</a>
-            <a href="#projects">{{ content.navigation.projects }}</a>
-            <a href="#skills">{{ content.navigation.skills }}</a>
-            <a href="#contact">{{ content.navigation.contact }}</a>
+        <nav
+            class="main-navigation"
+            aria-label="{{ content.accessibility.main_navigation }}"
+        >
+            {% for page in ["home", "projects", "blog", "about"] %}
+                <a
+                    href="{{ url_for(LANGUAGE_ROUTES[content.language.lower()][page]) }}"
+                    class="{% if current_page == page %}is-active{% endif %}"
+                    {% if current_page == page %}aria-current="page"{% endif %}
+                >
+                    {{ site_text.navigation[page] }}
+                </a>
+            {% endfor %}
         </nav>
 
         <div class="header-controls">
@@ -62,12 +74,11 @@
                     <li>
                         <a
                             class="language-option {% if content.language == 'pt-BR' %}is-selected{% endif %}"
-                            href="{{ url_for('main.index_pt_br') }}"
+                            href="{{ language_urls['pt-br'] }}"
                             role="option"
                             aria-selected="{{ 'true' if content.language == 'pt-BR' else 'false' }}"
                             data-lang="pt-br"
                             data-value="PT-BR"
-                            data-url="{{ url_for('main.index_pt_br') }}"
                         >
                             <span class="language-option-code">PT-BR</span>
                             <span class="language-option-label">Português (Brasil)</span>
@@ -76,12 +87,11 @@
                     <li>
                         <a
                             class="language-option {% if content.language != 'pt-BR' %}is-selected{% endif %}"
-                            href="{{ url_for('main.index') }}"
+                            href="{{ language_urls['en'] }}"
                             role="option"
                             aria-selected="{{ 'true' if content.language != 'pt-BR' else 'false' }}"
                             data-lang="en"
                             data-value="EN"
-                            data-url="{{ url_for('main.index') }}"
                         >
                             <span class="language-option-code">EN</span>
                             <span class="language-option-label">English</span>

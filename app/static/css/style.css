@@ -79,6 +79,28 @@ button:focus-visible {
     margin-inline: auto;
 }
 
+/* Temporary content for pages that are not implemented yet. */
+.page-placeholder {
+    width: min(1100px, 88%);
+    min-height: 55vh;
+    margin-inline: auto;
+    padding-block: 80px;
+}
+
+.page-placeholder h1 {
+    display: inline-block;
+    margin: 0 0 20px;
+    border-bottom: 2px solid var(--accent);
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.2;
+}
+
+.page-placeholder p {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
 .content-section {
     padding-block: 70px;
     scroll-margin-top: 90px;
@@ -916,6 +938,12 @@ button:focus-visible {
         flex-direction: column;
         gap: 4px;
         text-align: center;
+    }
+
+    /* Keep the navigation usable on narrow screens. */
+    .main-navigation {
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 }
 

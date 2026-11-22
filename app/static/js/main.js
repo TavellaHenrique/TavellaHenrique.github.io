@@ -1,4 +1,4 @@
-// Find the theme control and the document root.
+// Find the theme and language controls.
 const themeToggle = document.querySelector(".theme-toggle");
 const languagePicker = document.querySelector(".language-picker");
 const languageToggle = document.querySelector(".language-toggle");
@@ -6,19 +6,13 @@ const languageMenu = document.querySelector(".language-menu");
 const languageOptions = Array.from(
     document.querySelectorAll(".language-option")
 );
-const siteHeader = document.querySelector(".site-header");
-const navigationLinks = Array.from(
-    document.querySelectorAll(".main-navigation a")
-);
-const sections = Array.from(
-    document.querySelectorAll("main section[id]")
-);
 const rootElement = document.documentElement;
 
 // Restore the saved theme or use light mode by default.
 const savedTheme = localStorage.getItem("portfolio-theme");
 const initialTheme = savedTheme === "dark" ? "dark" : "light";
 
+// Apply the initial theme.
 rootElement.dataset.theme = initialTheme;
 
 // Update the theme and its accessibility state.
@@ -34,7 +28,7 @@ function updateTheme(theme) {
 // Initialize the theme control.
 updateTheme(initialTheme);
 
-// Switch between light and dark themes when clicked.
+// Switch themes when the control is clicked.
 themeToggle.addEventListener("click", () => {
     const nextTheme =
         rootElement.dataset.theme === "dark" ? "light" : "dark";
@@ -42,150 +36,103 @@ themeToggle.addEventListener("click", () => {
     updateTheme(nextTheme);
 });
 
-function getCurrentSection() {
-    const headerHeight = siteHeader.getBoundingClientRect().height;
-    const isAtPageBottom =
-        window.scrollY + window.innerHeight >=
-        document.documentElement.scrollHeight - 2;
-    let currentSection = isAtPageBottom
-        ? sections[sections.length - 1]
-        : sections[0];
-
-    if (!isAtPageBottom) {
-        sections.forEach((section) => {
-            if (section.getBoundingClientRect().top <= headerHeight + 48) {
-                currentSection = section;
-            }
-        });
-    }
-
-    return currentSection;
-}
-
-function updateActiveNavigation() {
-    const currentSection = getCurrentSection();
-
-    navigationLinks.forEach((link) => {
-        const isCurrent = link.hash === `#${currentSection.id}`;
-        link.classList.toggle("is-active", isCurrent);
-
-        if (isCurrent) {
-            link.setAttribute("aria-current", "location");
-        } else {
-            link.removeAttribute("aria-current");
-        }
-    });
-}
-
-updateActiveNavigation();
-window.addEventListener("scroll", updateActiveNavigation, { passive: true });
-window.addEventListener("resize", updateActiveNavigation);
-
+// Initialize the language picker when its elements are available.
 if (languagePicker && languageToggle && languageMenu) {
     const toggleLabel = languageToggle.querySelector(".language-toggle-label");
 
-    function setLanguageSelection(languageValue) {
-        const selectedOption = languageOptions.find(
-            (option) => option.dataset.lang === languageValue
-        );
-
-        if (!selectedOption) {
-            return;
-        }
-
-        languageOptions.forEach((option) => {
-            const isSelected = option === selectedOption;
-            option.classList.toggle("is-selected", isSelected);
-            option.setAttribute("aria-selected", String(isSelected));
-        });
-
-        if (toggleLabel) {
-            toggleLabel.textContent = selectedOption.dataset.value;
-        }
-    }
-
+    // Close the language menu and update its accessibility state.
     function closeLanguageMenu() {
         languagePicker.classList.remove("is-open");
         languageToggle.setAttribute("aria-expanded", "false");
     }
 
+    // Open the language menu and update its accessibility state.
     function openLanguageMenu() {
         languagePicker.classList.add("is-open");
         languageToggle.setAttribute("aria-expanded", "true");
     }
 
-    const currentLanguage = document.documentElement.lang.toLowerCase();
-    setLanguageSelection(currentLanguage === "pt-br" ? "pt-br" : "en");
+    // Set the currently active language label.
+    const currentLanguage = rootElement.lang.toLowerCase();
 
+    if (toggleLabel) {
+        toggleLabel.textContent = currentLanguage === "pt-br" ? "PT-BR" : "EN";
+    }
+
+    // Toggle the language menu when its button is clicked.
     languageToggle.addEventListener("click", (event) => {
         event.stopPropagation();
-        const shouldOpen = !languagePicker.classList.contains("is-open");
 
-        if (shouldOpen) {
+        const isOpen = languagePicker.classList.contains("is-open");
+
+        if (isOpen) {
+            closeLanguageMenu();
+        } else {
             openLanguageMenu();
-            return;
         }
-
-        closeLanguageMenu();
     });
 
+    // Close the menu when a language link is selected.
     languageOptions.forEach((option) => {
-        option.addEventListener("click", (event) => {
-            event.stopPropagation();
-
-            const selectedLanguage = option.dataset.lang;
-            const destinationPath = option.getAttribute("href") || option.dataset.url;
-            const destination = new URL(destinationPath, window.location.href);
-            const currentSection = getCurrentSection();
-
-            destination.hash = currentSection.id;
-            setLanguageSelection(selectedLanguage);
+        option.addEventListener("click", () => {
             closeLanguageMenu();
-
-            if (selectedLanguage === currentLanguage) {
-                return;
-            }
-
-            window.location.assign(destination.href);
         });
     });
 
+    // Close the menu when clicking outside the language picker.
     document.addEventListener("click", (event) => {
         if (!languagePicker.contains(event.target)) {
             closeLanguageMenu();
         }
     });
 
+    // Close the menu with Escape and return focus to its button.
     document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && languagePicker.classList.contains("is-open")) {
+        if (
+            event.key === "Escape" &&
+            languagePicker.classList.contains("is-open")
+        ) {
             closeLanguageMenu();
             languageToggle.focus();
         }
     });
 
+    // Allow opening the language menu with the ArrowDown key.
     languageToggle.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowDown" && !languagePicker.classList.contains("is-open")) {
+        if (event.key === "ArrowDown") {
             event.preventDefault();
             openLanguageMenu();
-            const firstOption = languageOptions[0];
-            if (firstOption) {
-                firstOption.focus();
+
+            if (languageOptions.length > 0) {
+                languageOptions[0].focus();
             }
         }
     });
 
+    // Support keyboard navigation between language options.
     languageMenu.addEventListener("keydown", (event) => {
         const currentIndex = languageOptions.indexOf(document.activeElement);
+
         if (event.key === "ArrowDown") {
             event.preventDefault();
-            const nextIndex = currentIndex < languageOptions.length - 1 ? currentIndex + 1 : 0;
+
+            const nextIndex =
+                currentIndex < languageOptions.length - 1
+                    ? currentIndex + 1
+                    : 0;
+
             languageOptions[nextIndex].focus();
         }
 
         if (event.key === "ArrowUp") {
             event.preventDefault();
-            const nextIndex = currentIndex > 0 ? currentIndex - 1 : languageOptions.length - 1;
-            languageOptions[nextIndex].focus();
+
+            const previousIndex =
+                currentIndex > 0
+                    ? currentIndex - 1
+                    : languageOptions.length - 1;
+
+            languageOptions[previousIndex].focus();
         }
 
         if (event.key === "Home") {

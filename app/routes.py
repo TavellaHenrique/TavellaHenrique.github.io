@@ -38,6 +38,11 @@ def render_page(language: str, page: str, template: str = "pages/placeholder.htm
     alternate_language = "pt-br" if language == "en" else "en"
     alternate_endpoint = LANGUAGE_ROUTES[alternate_language][page]
 
+    language_urls = {
+        "en": url_for(LANGUAGE_ROUTES["en"][page]),
+        "pt-br": url_for(LANGUAGE_ROUTES["pt-br"][page]),
+    }
+
     return render_template(
         template,
         content=localized_content,
@@ -45,6 +50,8 @@ def render_page(language: str, page: str, template: str = "pages/placeholder.htm
         current_page=page,
         page_title=site_text["navigation"][page],
         alternate_url=url_for(alternate_endpoint),
+        language_urls=language_urls,
+        LANGUAGE_ROUTES=LANGUAGE_ROUTES,
     )
 
 
