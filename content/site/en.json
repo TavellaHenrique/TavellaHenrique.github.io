@@ -36,7 +36,15 @@
     "updated_at": "Updated",
     "related_project": "Related project",
     "tag_heading": "Posts tagged",
-    "tag_intro": "Articles associated with this tag."
+    "tag_intro": "Articles associated with this tag.",
+    "search_label": "Search articles",
+    "search_placeholder": "Search by title, description or tag...",
+    "search_language_notice": "Search is limited to articles in English.",
+    "filter_label": "Filter by tag",
+    "all_tags": "All tags",
+    "clear_filters": "Clear filters",
+    "search_no_results": "No articles match your search.",
+    "search_results": "{count} articles found"
   },
   "footer": {
     "signature": "<< Allevat >>",

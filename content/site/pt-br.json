@@ -36,7 +36,15 @@
     "updated_at": "Atualizado em",
     "related_project": "Projeto relacionado",
     "tag_heading": "Artigos com a tag",
-    "tag_intro": "Artigos associados a esta tag."
+    "tag_intro": "Artigos associados a esta tag.",
+    "search_label": "Buscar artigos",
+    "search_placeholder": "Buscar por título, descrição ou tag...",
+    "search_language_notice": "A busca está limitada aos artigos em português.",
+    "filter_label": "Filtrar por tag",
+    "all_tags": "Todas as tags",
+    "clear_filters": "Limpar filtros",
+    "search_no_results": "Nenhum artigo corresponde à sua busca.",
+    "search_results": "{count} artigos encontrados"
   },
   "footer": {
     "signature": "<< Allevat >>",

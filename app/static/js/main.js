@@ -146,3 +146,120 @@ if (languagePicker && languageToggle && languageMenu) {
         }
     });
 }
+
+// Initialize blog search and tag filtering when the controls exist.
+const blogSearch = document.querySelector("#blog-search");
+const blogTagFilter = document.querySelector("#blog-tag-filter");
+const blogSearchReset = document.querySelector("#blog-search-reset");
+const blogSearchResults = document.querySelector("#blog-search-results");
+const blogEmptyState = document.querySelector("#blog-empty-state");
+const blogPostCards = Array.from(
+    document.querySelectorAll(".blog-post-card[data-search-index]")
+);
+
+// Normalize text for case-insensitive and accent-insensitive searching.
+function normalizeSearchText(value) {
+    return value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+}
+
+// Initialize the blog filters only on pages that contain them.
+if (
+    blogSearch &&
+    blogTagFilter &&
+    blogSearchReset &&
+    blogSearchResults &&
+    blogPostCards.length > 0
+) {
+    const blogSearchContainer = blogSearch.closest(".blog-search-controls");
+
+    // Collect unique tags from the rendered article cards.
+    const availableTags = new Set();
+
+    blogPostCards.forEach((card) => {
+        card.querySelectorAll(".blog-post-tags a").forEach((tagLink) => {
+            availableTags.add(tagLink.textContent.trim());
+        });
+    });
+
+    // Populate the tag filter with the available tags.
+    Array.from(availableTags)
+        .sort((firstTag, secondTag) =>
+            firstTag.localeCompare(secondTag)
+        )
+        .forEach((tag) => {
+            const option = document.createElement("option");
+
+            option.value = normalizeSearchText(tag);
+            option.textContent = tag;
+
+            blogTagFilter.appendChild(option);
+        });
+
+    // Filter cards based on the search query and selected tag.
+    function filterBlogPosts() {
+        const searchQuery = normalizeSearchText(blogSearch.value);
+        const selectedTag = blogTagFilter.value;
+
+        let visibleCount = 0;
+
+        blogPostCards.forEach((card) => {
+            const searchIndex = normalizeSearchText(
+                card.dataset.searchIndex || ""
+            );
+
+            const cardTags = Array.from(
+                card.querySelectorAll(".blog-post-tags a")
+            ).map((tagLink) => normalizeSearchText(tagLink.textContent));
+
+            const matchesSearch = searchIndex.includes(searchQuery);
+            const matchesTag =
+                !selectedTag || cardTags.includes(selectedTag);
+
+            const isVisible = matchesSearch && matchesTag;
+
+            card.hidden = !isVisible;
+
+            if (isVisible) {
+                visibleCount += 1;
+            }
+        });
+
+        // Show the empty state when no cards match the current filters.
+        if (blogEmptyState) {
+            blogEmptyState.hidden = visibleCount > 0;
+            blogEmptyState.textContent =
+                blogSearchResults.dataset.noResults;
+        }
+
+        // Announce the number of matching articles to assistive technology.
+        blogSearchResults.textContent =
+            visibleCount === 0
+                ? blogSearchResults.dataset.noResults
+                : blogSearchResults.dataset.results.replace(
+                    "{count}",
+                    visibleCount
+                );
+    }
+
+    // Clear the search query and tag filter.
+    function resetBlogFilters() {
+        blogSearch.value = "";
+        blogTagFilter.value = "";
+
+        filterBlogPosts();
+
+        blogSearch.focus();
+    }
+
+    // Update results while typing or changing the selected tag.
+    blogSearch.addEventListener("input", filterBlogPosts);
+    blogTagFilter.addEventListener("change", filterBlogPosts);
+    blogSearchReset.addEventListener("click", resetBlogFilters);
+
+    // Initialize the result count.
+    filterBlogPosts();
+}

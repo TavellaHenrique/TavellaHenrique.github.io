@@ -7,6 +7,61 @@
         <p>{{ site_text.blog.intro }}</p>
     </header>
 
+    {% if posts %}
+        <div class="blog-search-controls">
+            <div class="blog-search-field">
+                <label for="blog-search">
+                    {{ site_text.blog.search_label }}
+                </label>
+                <input
+                    type="search"
+                    id="blog-search"
+                    placeholder="{{ site_text.blog.search_placeholder }}"
+                    autocomplete="off"
+                >
+                <p class="blog-search-language-notice">
+                    {{ site_text.blog.search_language_notice }}
+                </p>
+            </div>
+
+            <div class="blog-filter-field">
+                <label for="blog-tag-filter">
+                    {{ site_text.blog.filter_label }}
+                </label>
+                <select id="blog-tag-filter">
+                    <option value="">{{ site_text.blog.all_tags }}</option>
+                </select>
+            </div>
+
+            <button
+                type="button"
+                id="blog-search-reset"
+                class="blog-search-reset"
+            >
+                {{ site_text.blog.clear_filters }}
+            </button>
+        </div>
+
+        <p
+            id="blog-search-results"
+            class="blog-search-results"
+            role="status"
+            aria-live="polite"
+            data-no-results="{{ site_text.blog.search_no_results }}"
+            data-results="{{ site_text.blog.search_results }}"
+        ></p>
+    {% endif %}
+
     {% include "blog/_post_cards.html" %}
+
+    {% if posts %}
+    <p
+        class="blog-empty-state"
+        id="blog-empty-state"
+        hidden
+    >
+        {{ site_text.blog.search_no_results }}
+    </p>
+{% endif %}
 </section>
 {% endblock %}

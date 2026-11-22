@@ -3,7 +3,10 @@
         {% for post in posts %}
             {% set post_url = '/blog/' ~ post.slug ~ '/' if content.language == 'en' else '/pt-br/blog/' ~ post.slug ~ '/' %}
 
-            <article class="blog-post-card{% if post.featured %} blog-post-card-featured{% endif %}">
+            <article
+                class="blog-post-card{% if post.featured %} blog-post-card-featured{% endif %}"
+                data-search-index="{{ (post.title ~ ' ' ~ post.description ~ ' ' ~ post.tags|join(' '))|lower }}"
+            >
                 {% if post.cover_image %}
                     <img
                         class="blog-post-cover"

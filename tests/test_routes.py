@@ -791,3 +791,66 @@ def test_tag_language_switcher_falls_back_to_blog(client, monkeypatch):
 
     assert response.status_code == 200
     assert 'href="/blog/"' in html
+
+
+def test_english_blog_search_controls_are_rendered(client, monkeypatch):
+    """Verify English blog search controls and language notice."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [make_post()],
+    )
+
+    response = client.get("/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'id="blog-search"' in html
+    assert 'id="blog-tag-filter"' in html
+    assert 'id="blog-search-reset"' in html
+    assert "Search is limited to articles in English." in html
+    assert "Search by title, description or tag..." in html
+    assert "Clear filters" in html
+
+
+def test_portuguese_blog_search_controls_are_rendered(client, monkeypatch):
+    """Verify Portuguese blog search controls and language notice."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [make_post()],
+    )
+
+    response = client.get("/pt-br/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'id="blog-search"' in html
+    assert 'id="blog-tag-filter"' in html
+    assert 'id="blog-search-reset"' in html
+    assert "A busca está limitada aos artigos em português." in html
+    assert "Buscar por título, descrição ou tag..." in html
+    assert "Limpar filtros" in html
+
+
+def test_blog_post_cards_include_search_index(client, monkeypatch):
+    """Verify rendered post cards expose searchable metadata."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [make_post()],
+    )
+
+    response = client.get("/blog/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "data-search-index=" in html
+    assert "Test Article" in html
+    assert "Test article description." in html
