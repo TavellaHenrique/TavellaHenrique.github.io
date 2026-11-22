@@ -78,9 +78,7 @@ CONTENT = {
                 "and concrete project."
             ),
             "objective": "Project objective",
-            "objective_description": (
-                "Explore Pygame by reproducing a well-known game."
-            ),
+            "objective_description": ("Explore Pygame by reproducing a well-known game."),
             "features_title": "Implemented features",
             "features": [
                 "Local matches for two players or against the computer",
@@ -91,19 +89,15 @@ CONTENT = {
             "technology_title": "Technologies",
             "technologies": ["Python 3.12", "Pygame"],
             "image_alt": (
-                "Illustration of a Pong match with two paddles, a ball, "
-                "and a score of 3 to 2."
+                "Illustration of a Pong match with two paddles, a ball, and a score of 3 to 2."
             ),
-            "image_caption": (
-                "Illustrative gameplay preview · Classic theme"
-            ),
+            "image_caption": ("Illustrative gameplay preview · Classic theme"),
             "repository": "View source on GitHub",
         },
         "contact": {
             "heading": "Let's connect.",
             "description": (
-                "Have a project, an idea or an opportunity in mind? "
-                "Feel free to reach out."
+                "Have a project, an idea or an opportunity in mind? Feel free to reach out."
             ),
             "cards": [
                 {
@@ -220,9 +214,7 @@ CONTENT = {
                 "conhecido e concreto."
             ),
             "objective": "Objetivo do projeto",
-            "objective_description": (
-                "Explorar o Pygame reproduzindo um jogo conhecido."
-            ),
+            "objective_description": ("Explorar o Pygame reproduzindo um jogo conhecido."),
             "features_title": "Funcionalidades implementadas",
             "features": [
                 "Partidas locais para dois jogadores ou contra o computador",
@@ -233,12 +225,9 @@ CONTENT = {
             "technology_title": "Tecnologias",
             "technologies": ["Python 3.12", "Pygame"],
             "image_alt": (
-                "Ilustração de uma partida de Pong com duas raquetes, "
-                "uma bola e placar de 3 a 2."
+                "Ilustração de uma partida de Pong com duas raquetes, uma bola e placar de 3 a 2."
             ),
-            "image_caption": (
-                "Prévia ilustrativa da partida · tema Clássico"
-            ),
+            "image_caption": ("Prévia ilustrativa da partida · tema Clássico"),
             "repository": "Ver código no GitHub",
         },
         "contact": {

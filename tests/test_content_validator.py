@@ -2,9 +2,7 @@
 
 from pathlib import Path
 
-
 from app.services.content_validator import ContentValidator
-
 
 CONTENT_ROOT = Path(__file__).parents[1] / "content"
 
@@ -48,7 +46,6 @@ def test_missing_markdown_file_is_reported(tmp_path: Path) -> None:
     validator = ContentValidator(content_root)
     errors = validator.validate_projects()
 
-
     assert any("content file 'en.md' is missing" in error for error in errors)
 
 
@@ -71,6 +68,5 @@ def test_date_order_validation_reports_completion_before_start(tmp_path: Path) -
     (project_directory / "project.json").write_text(json.dumps(metadata), encoding="utf-8")
 
     errors = ContentValidator(content_root).validate_projects()
-
 
     assert any("completion_date cannot precede start_date" in error for error in errors)

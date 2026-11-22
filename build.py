@@ -2,11 +2,10 @@
 
 from pathlib import Path
 
-
 from flask_frozen import Freezer
 
 from app import create_app
-from app.services.content_validator import ContentValidator, ContentValidationError
+from app.services.content_validator import ContentValidationError, ContentValidator
 
 app = create_app()
 

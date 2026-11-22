@@ -6,7 +6,6 @@ import pytest
 
 from app.services.content_loader import ContentLoader
 
-
 CONTENT_ROOT = Path(__file__).parents[1] / "content"
 
 

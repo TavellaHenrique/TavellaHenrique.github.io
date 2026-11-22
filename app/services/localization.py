@@ -2,7 +2,6 @@
 
 from typing import Any
 
-
 SUPPORTED_LANGUAGES = ("en", "pt-br")
 DEFAULT_LANGUAGE = "en"
 

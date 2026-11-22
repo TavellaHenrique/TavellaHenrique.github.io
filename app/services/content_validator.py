@@ -7,7 +7,6 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
-
 SUPPORTED_LANGUAGES = {"en", "pt-br"}
 PROJECT_STATUSES = {"in_progress", "completed", "archived"}
 POST_STATUSES = {"draft", "published"}
@@ -119,16 +118,22 @@ class ContentValidator:
                 errors.append(f"{path}: tags must contain non-empty strings.")
             self._validate_date(project.get("start_date"), path, "start_date", errors)
             self._validate_date(project.get("completion_date"), path, "completion_date", errors)
-            self._validate_date_order(project.get("start_date"), project.get("completion_date"), path, errors)
+            self._validate_date_order(
+                project.get("start_date"), project.get("completion_date"), path, errors
+            )
             self._validate_content_files(project.get("content_files"), path.parent, path, errors)
             self._validate_local_media(project.get("cover_image"), path, errors)
             if project.get("cover_image"):
                 cover_alt = project.get("cover_alt")
                 if not isinstance(cover_alt, dict) or not any(
-                    language in cover_alt and isinstance(cover_alt[language], str) and cover_alt[language]
+                    language in cover_alt
+                    and isinstance(cover_alt[language], str)
+                    and cover_alt[language]
                     for language in SUPPORTED_LANGUAGES
                 ):
-                    errors.append(f"{path}: a cover image requires at least one localized alt text.")
+                    errors.append(
+                        f"{path}: a cover image requires at least one localized alt text."
+                    )
             media_items = project.get("media", [])
             if not isinstance(media_items, list):
                 errors.append(f"{path}: 'media' must be a list.")
@@ -187,11 +192,15 @@ class ContentValidator:
             self._validate_local_media(post.get("cover_image"), path, errors)
             if post.get("status") == "published" and not post.get("published_at"):
                 errors.append(f"{path}: published posts require 'published_at'.")
-            self._validate_date_order(post.get("published_at"), post.get("updated_at"), path, errors)
+            self._validate_date_order(
+                post.get("published_at"), post.get("updated_at"), path, errors
+            )
             if post.get("status") == "published" and post.get("language") not in (
                 post.get("content_files") or {}
             ):
-                errors.append(f"{path}: published post must have a Markdown file for its primary language.")
+                errors.append(
+                    f"{path}: published post must have a Markdown file for its primary language."
+                )
         return errors
 
     def _read_json(self, path: Path, errors: list[str]) -> dict[str, Any] | None:
@@ -244,7 +253,9 @@ class ContentValidator:
             elif not candidate.is_file():
                 errors.append(f"{metadata_path}: content file '{file_name}' is missing.")
 
-    def _validate_local_media(self, media_path: Any, metadata_path: Path, errors: list[str]) -> None:
+    def _validate_local_media(
+        self, media_path: Any, metadata_path: Path, errors: list[str]
+    ) -> None:
         """Validate media paths as local files within the project repository."""
         if media_path is None:
             return
@@ -292,13 +303,9 @@ class ContentValidator:
         """Validate project/post relationship IDs against existing content."""
         errors: list[str] = []
         project_ids = {
-            project.get("id")
-            for project in self._load_metadata("projects", "project.json", errors)
+            project.get("id") for project in self._load_metadata("projects", "project.json", errors)
         }
-        post_ids = {
-            post.get("id")
-            for post in self._load_metadata("posts", "post.json", errors)
-        }
+        post_ids = {post.get("id") for post in self._load_metadata("posts", "post.json", errors)}
 
         settings_path = self.content_root / "site" / "settings.json"
         settings = self._read_json(settings_path, errors)
@@ -309,7 +316,9 @@ class ContentValidator:
             else:
                 for project_id in featured_ids:
                     if project_id not in project_ids:
-                        errors.append(f"{settings_path}: featured project '{project_id}' does not exist.")
+                        errors.append(
+                            f"{settings_path}: featured project '{project_id}' does not exist."
+                        )
 
         for path in sorted((self.content_root / "projects").glob("*/project.json")):
             project = self._read_json(path, errors)
@@ -328,7 +337,9 @@ class ContentValidator:
                 errors.append(f"{path}: related project '{related_project}' does not exist.")
         return errors
 
-    def _load_metadata(self, directory_name: str, file_name: str, errors: list[str]) -> list[dict[str, Any]]:
+    def _load_metadata(
+        self, directory_name: str, file_name: str, errors: list[str]
+    ) -> list[dict[str, Any]]:
         """Read metadata records for relationship checks."""
         records: list[dict[str, Any]] = []
         directory = self.content_root / directory_name

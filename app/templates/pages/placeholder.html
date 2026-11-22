@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="page-placeholder" aria-labelledby="page-title">
+    <h1 id="page-title">{{ page_title }}</h1>
+
+    {% if content.language == "pt-BR" %}
+        <p>Esta página está em desenvolvimento.</p>
+    {% else %}
+        <p>This page is currently under development.</p>
+    {% endif %}
+</section>
+{% endblock %}
