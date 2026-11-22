@@ -1,9 +1,12 @@
+"""Build the static website with Frozen-Flask."""
 
 from pathlib import Path
+
 
 from flask_frozen import Freezer
 
 from app import create_app
+from app.services.content_validator import ContentValidator, ContentValidationError
 
 app = create_app()
 
@@ -19,5 +22,10 @@ freezer = Freezer(app)
 
 
 if __name__ == "__main__":
-    # Generate the static website.
+    # Validate content before generating public pages.
+    validation_errors = ContentValidator(PROJECT_ROOT / "content").validate_all()
+    if validation_errors:
+        raise ContentValidationError(validation_errors)
+
+    # Generate the static website only when content is valid.
     freezer.freeze()

@@ -1,0 +1,47 @@
+{
+  "id": "pong-by-allevat",
+  "slug": {
+    "en": "pong-by-allevat",
+    "pt-br": "pong-by-allevat"
+  },
+  "title": {
+    "en": "Pong By Allevat",
+    "pt-br": "Pong By Allevat"
+  },
+  "short_description": {
+    "en": "A reproduction of the classic Pong game, developed to explore Pygame through a familiar and concrete project.",
+    "pt-br": "Uma reprodução do clássico Pong, desenvolvida para explorar o Pygame por meio de um projeto conhecido e concreto."
+  },
+  "status": "completed",
+  "featured": true,
+  "technologies": [
+    "Python 3.12",
+    "Pygame"
+  ],
+  "tags": [
+    "game-development",
+    "python"
+  ],
+  "start_date": null,
+  "completion_date": null,
+  "cover_image": "app/static/images/pong-by-allevat.svg",
+  "media": [],
+  "links": {
+    "github": null,
+    "demo": null
+  },
+  "related_post_ids": [],
+  "order": 10,
+  "content_files": {
+    "en": "en.md",
+    "pt-br": "pt-br.md"
+  },
+  "cover_alt": {
+    "en": "Illustration of a Pong match with two paddles, a ball, and a score of 3 to 2.",
+    "pt-br": "Ilustração de uma partida de Pong com duas raquetes, uma bola e placar de 3 a 2."
+  },
+  "cover_caption": {
+    "en": "Illustrative gameplay preview · Classic theme",
+    "pt-br": "Prévia ilustrativa da partida · tema Clássico"
+  }
+}

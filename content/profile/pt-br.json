@@ -1,0 +1,20 @@
+{
+  "name": "Henrique Tavella",
+  "full_name": "Henrique Ribeiro da Cunha Tavella",
+  "presentation": "Para mim, o desenvolvimento de software é um caminho: uma forma de ajudar pessoas, dando às suas ideias a oportunidade de se tornarem realidade.",
+  "education": [],
+  "skills": [
+    {"name": "Desenvolvimento Web", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
+    {"name": "Desenvolvimento para Desktop", "technologies": ["Java", "Python", "C#"]},
+    {"name": "Desenvolvimento Mobile", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
+    {"name": "Bancos de Dados", "technologies": ["MySQL", "SQLite"]},
+    {"name": "Ferramentas", "technologies": ["Git", "GitHub", "VS Code"]}
+  ],
+  "professional_objectives": [],
+  "avatar": null,
+  "links": [
+    {"label": "E-mail", "url": "mailto:henriquetavella0@gmail.com"},
+    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
+    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
+  ]
+}

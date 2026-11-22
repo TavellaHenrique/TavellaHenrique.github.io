@@ -1,0 +1,1207 @@
+diff --git a/CONTENT_MODEL.md b/CONTENT_MODEL.md
+new file mode 100644
+index 0000000..301dc99
+--- /dev/null
++++ b/CONTENT_MODEL.md
+@@ -0,0 +1,60 @@
++# Content model reference
++
++Content files are UTF-8. Stable `id` values are used for relationships; slugs are used only in URLs and can be language-specific. Translations are optional.
++
++## Project metadata example
++
++```json
++{
++  "id": "sample-project",
++  "slug": {"en": "sample-project", "pt-br": "projeto-exemplo"},
++  "title": {"en": "Sample Project", "pt-br": "Projeto Exemplo"},
++  "short_description": {"en": "Short summary.", "pt-br": "Resumo."},
++  "status": "in_progress",
++  "featured": false,
++  "technologies": [],
++  "tags": [],
++  "start_date": null,
++  "completion_date": null,
++  "cover_image": null,
++  "cover_alt": {"en": "Describe the image.", "pt-br": "Descreva a imagem."},
++  "cover_caption": {"en": "Optional caption.", "pt-br": "Legenda opcional."},
++  "media": [],
++  "links": {"github": null, "demo": null},
++  "related_post_ids": [],
++  "order": 100,
++  "content_files": {"en": "en.md", "pt-br": "pt-br.md"}
++}
++```
++
++Allowed project statuses: `in_progress`, `completed`, `archived`. Dates use `YYYY-MM-DD` or `null`. Markdown translations can be omitted when unavailable; metadata maps should contain at least one localized value.
++
++## Blog post metadata example
++
++```json
++{
++  "id": "sample-post",
++  "slug": {"en": "sample-post", "pt-br": "artigo-exemplo"},
++  "title": {"en": "Sample Post", "pt-br": "Artigo Exemplo"},
++  "description": {"en": "Short summary.", "pt-br": "Resumo."},
++  "status": "draft",
++  "language": "en",
++  "published_at": null,
++  "updated_at": null,
++  "tags": [],
++  "cover_image": null,
++  "related_project_id": null,
++  "featured": false,
++  "content_files": {"en": "en.md"}
++}
++```
++
++Allowed post statuses: `draft`, `published`. Published posts require a publication date. `language` identifies the primary language of the post; `content_files` lists available translations. A post can be related to one project initially.
++
++## Profile metadata
++
++Each language file in `content/profile/` stores the editable profile fields: `name`, `full_name`, `presentation`, `education`, `skills`, `professional_objectives`, `avatar`, and `links`. Keep unavailable personal information empty until supplied.
++
++## Local media
++
++Use repository-relative paths, such as `app/static/images/projects/example/cover.webp`. External media URLs are not supported by validation. Markdown image paths should remain local and be checked when the full media validation is implemented.
+diff --git a/README.md b/README.md
+index e69de29..41e991d 100644
+--- a/README.md
++++ b/README.md
+@@ -0,0 +1,45 @@
++# Portfolio + Blog Content Structure
++
++The project is being incrementally refactored from a single-page Flask portfolio into a multipage portfolio and blog. During Stage 1, the existing homepage remains in place while content storage and validation are introduced.
++
++## Content directories
++
++- `content/profile/`: editable profile data, localized by language.
++- `content/site/`: global settings and localized site labels.
++- `content/projects/<project-id>/`: project metadata and localized Markdown descriptions.
++- `content/posts/<post-id>/`: blog metadata and localized Markdown articles.
++- `app/static/images/`: local image and media assets.
++
++## Content editing
++
++Edit JSON metadata and Markdown files directly. The content loader reads JSON metadata and the Markdown body for the requested language. Missing translations are allowed; localized metadata may provide one or more supported languages. Stable IDs are used for relationships, rather than display names or slugs.
++
++## Validation
++
++Run content validation independently:
++
++```bash
++python scripts/validate_content.py
++```
++
++The static build also validates content before generating the `docs/` directory. Invalid content prevents the build from completing.
++
++## Initial content model
++
++### Profile
++
++Profile JSON files include `name`, `full_name`, `presentation`, `education`, `skills`, `professional_objectives`, `avatar`, and `links`. Fields that have not yet been provided are kept empty rather than invented.
++
++### Projects
++
++Each `project.json` contains an ID, language-specific slugs/titles/descriptions, status, featured flag, technologies, tags, optional dates, optional local media, links, relationships, display order, and localized Markdown file references.
++
++Allowed statuses: `in_progress`, `completed`, `archived`.
++
++### Blog posts
++
++The post model will use an ID, localized slugs/titles/descriptions, publication status, language, published/updated dates, tags, optional local cover, optional project relationship, featured flag, and Markdown body file references. Allowed statuses are `draft` and `published`. Draft filtering is implemented by the content loader; the full post model will be validated as posts are added.
++
++## Security and media
++
++Markdown rendering disables raw HTML. Media paths must be local repository files; external image URLs are not accepted by content validation. Markdown file paths are constrained to the corresponding content folder.
+diff --git a/app/__init__.py b/app/__init__.py
+index 22102f7..85749a6 100644
+--- a/app/__init__.py
++++ b/app/__init__.py
+@@ -1,13 +1,15 @@
+-from flask import Flask
+-
+-from app.routes import main
+-
+-
+-def create_app() -> Flask:
+-    """Create and configure the Flask application."""
+-    app = Flask(__name__)
+-
+-    # Register the main application routes.
+-    app.register_blueprint(main)
+-
+-    return app
+\ No newline at end of file
++"""Application factory for the Flask portfolio website."""
++
++
++def create_app():
++    """Create and configure the Flask application."""
++    from flask import Flask
++
++    from app.routes import main
++
++    app = Flask(__name__)
++
++    # Register the existing homepage routes until the multipage refactor begins.
++    app.register_blueprint(main)
++
++    return app
+diff --git a/app/services/__init__.py b/app/services/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/app/services/content_loader.py b/app/services/content_loader.py
+new file mode 100644
+index 0000000..d6c028d
+--- /dev/null
++++ b/app/services/content_loader.py
+@@ -0,0 +1,95 @@
++"""Load structured site content and Markdown bodies from the content directory."""
++
++from __future__ import annotations
++
++import json
++from pathlib import Path
++from typing import Any
++
++
++class ContentLoader:
++    """Read JSON metadata and Markdown content from a configurable root directory."""
++
++    def __init__(self, content_root: Path | str = "content") -> None:
++        self.content_root = Path(content_root).resolve()
++
++    def load_json(self, file_path: Path | str) -> dict[str, Any]:
++        """Load a JSON file and ensure the root value is an object."""
++        path = self._resolve_path(file_path)
++        with path.open(encoding="utf-8") as file:
++            data = json.load(file)
++        if not isinstance(data, dict):
++            raise ValueError(f"Expected a JSON object in '{path}'.")
++        return data
++
++    def load_profile(self, language: str) -> dict[str, Any]:
++        """Load the localized profile JSON."""
++        return self.load_json(Path("profile") / f"{language}.json")
++
++    def load_site_settings(self) -> dict[str, Any]:
++        """Load global site settings."""
++        return self.load_json("site/settings.json")
++
++    def load_site_text(self, language: str) -> dict[str, Any]:
++        """Load localized site labels and text."""
++        return self.load_json(Path("site") / f"{language}.json")
++
++    def load_projects(self) -> list[dict[str, Any]]:
++        """Load all project metadata files, sorted by configured order."""
++        projects: list[dict[str, Any]] = []
++        directory = self.content_root / "projects"
++        if not directory.exists():
++            return projects
++
++        for metadata_path in sorted(directory.glob("*/project.json")):
++            project = self.load_json(metadata_path)
++            project["_content_directory"] = metadata_path.parent
++            projects.append(project)
++
++        return sorted(projects, key=lambda item: item.get("order", 0))
++
++    def load_project_markdown(self, project: dict[str, Any], language: str) -> str:
++        """Load the project body for a language, or an empty body if unavailable."""
++        file_map = project.get("content_files", {})
++        file_name = file_map.get(language)
++        if not file_name:
++            return ""
++        project_directory = Path(project["_content_directory"])
++        path = self._resolve_path(project_directory / file_name)
++        return path.read_text(encoding="utf-8")
++
++    def load_posts(self, include_drafts: bool = True) -> list[dict[str, Any]]:
++        """Load blog post metadata files; publication filtering is handled by services."""
++        posts: list[dict[str, Any]] = []
++        directory = self.content_root / "posts"
++        if not directory.exists():
++            return posts
++
++        for metadata_path in sorted(directory.glob("*/post.json")):
++            post = self.load_json(metadata_path)
++            post["_content_directory"] = metadata_path.parent
++            if include_drafts or post.get("status") != "draft":
++                posts.append(post)
++        return posts
++
++    def load_post_markdown(self, post: dict[str, Any], language: str) -> str:
++        """Load a localized blog post body, returning an empty body if missing."""
++        file_map = post.get("content_files", {})
++        file_name = file_map.get(language)
++        if not file_name:
++            return ""
++        post_directory = Path(post["_content_directory"])
++        path = self._resolve_path(post_directory / file_name)
++        return path.read_text(encoding="utf-8")
++
++    def _resolve_path(self, path: Path | str) -> Path:
++        """Resolve a content path and prevent access outside the content root."""
++        candidate = Path(path)
++        if not candidate.is_absolute():
++            candidate = self.content_root / candidate
++        resolved = candidate.resolve()
++        if resolved != self.content_root and self.content_root not in resolved.parents:
++            raise ValueError(f"Content path escapes content root: '{path}'.")
++        if not resolved.is_file():
++            raise FileNotFoundError(f"Content file not found: '{resolved}'.")
++        return resolved
+diff --git a/app/services/content_validator.py b/app/services/content_validator.py
+new file mode 100644
+index 0000000..4a955ce
+--- /dev/null
++++ b/app/services/content_validator.py
+@@ -0,0 +1,341 @@
++"""Validate content structure and basic cross-file integrity."""
++
++from __future__ import annotations
++
++import re
++from datetime import date
++from pathlib import Path
++from typing import Any
++
++
++SUPPORTED_LANGUAGES = {"en", "pt-br"}
++PROJECT_STATUSES = {"in_progress", "completed", "archived"}
++POST_STATUSES = {"draft", "published"}
++SLUG_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
++
++
++class ContentValidationError(ValueError):
++    """Raised when one or more content validation checks fail."""
++
++    def __init__(self, errors: list[str]) -> None:
++        self.errors = errors
++        super().__init__("Content validation failed:\n- " + "\n- ".join(errors))
++
++
++class ContentValidator:
++    """Validate content files against the initial content model."""
++
++    def __init__(self, content_root: Path | str = "content") -> None:
++        self.content_root = Path(content_root).resolve()
++
++    def validate_all(self) -> list[str]:
++        """Return all validation errors found in profile, site, projects, and posts."""
++        errors: list[str] = []
++        errors.extend(self.validate_profiles())
++        errors.extend(self.validate_site_settings())
++        errors.extend(self.validate_projects())
++        errors.extend(self.validate_posts())
++        errors.extend(self.validate_relationships())
++        return errors
++
++    def validate_profiles(self) -> list[str]:
++        """Check profile JSON files for required fields and valid value types."""
++        errors: list[str] = []
++        for language in SUPPORTED_LANGUAGES:
++            path = self.content_root / "profile" / f"{language}.json"
++            data = self._read_json(path, errors)
++            if data is None:
++                continue
++            for field in ("name", "presentation", "skills", "education", "links"):
++                if field not in data:
++                    errors.append(f"{path}: missing required field '{field}'.")
++            if not isinstance(data.get("skills", []), list):
++                errors.append(f"{path}: 'skills' must be a list.")
++            if not isinstance(data.get("links", []), list):
++                errors.append(f"{path}: 'links' must be a list.")
++        return errors
++
++    def validate_site_settings(self) -> list[str]:
++        """Validate global site settings and localized site text files."""
++        errors: list[str] = []
++        settings_path = self.content_root / "site" / "settings.json"
++        settings = self._read_json(settings_path, errors)
++        if settings is not None:
++            languages = settings.get("supported_languages")
++            if not isinstance(languages, list) or not languages:
++                errors.append(f"{settings_path}: 'supported_languages' must be a non-empty list.")
++            elif not set(languages).issubset(SUPPORTED_LANGUAGES):
++                errors.append(f"{settings_path}: contains unsupported language codes.")
++            if settings.get("default_language") not in SUPPORTED_LANGUAGES:
++                errors.append(f"{settings_path}: unsupported 'default_language'.")
++
++        for language in SUPPORTED_LANGUAGES:
++            path = self.content_root / "site" / f"{language}.json"
++            localized = self._read_json(path, errors)
++            if localized is not None:
++                for field in ("title", "description", "navigation", "footer"):
++                    if field not in localized:
++                        errors.append(f"{path}: missing required field '{field}'.")
++        return errors
++
++    def validate_projects(self) -> list[str]:
++        """Validate project metadata, localized fields, and Markdown files."""
++        errors: list[str] = []
++        directory = self.content_root / "projects"
++        if not directory.exists():
++            return errors
++        seen_ids: set[str] = set()
++        seen_slugs: dict[str, set[str]] = {language: set() for language in SUPPORTED_LANGUAGES}
++        for path in sorted(directory.glob("*/project.json")):
++            project = self._read_json(path, errors)
++            if project is None:
++                continue
++            project_id = project.get("id")
++            if not isinstance(project_id, str) or not project_id:
++                errors.append(f"{path}: 'id' must be a non-empty string.")
++            elif project_id in seen_ids:
++                errors.append(f"{path}: duplicate project id '{project_id}'.")
++            seen_ids.add(project_id)
++            self._validate_slug_map(project.get("slug"), path, errors)
++            for language, slug in (project.get("slug") or {}).items():
++                if language in seen_slugs and isinstance(slug, str):
++                    if slug in seen_slugs[language]:
++                        errors.append(f"{path}: duplicate project slug '{slug}' for '{language}'.")
++                    seen_slugs[language].add(slug)
++            for field in ("title", "short_description"):
++                value = project.get(field)
++                if not isinstance(value, dict) or not any(
++                    language in value and isinstance(value[language], str) and value[language]
++                    for language in SUPPORTED_LANGUAGES
++                ):
++                    errors.append(f"{path}: '{field}' must provide at least one localized value.")
++            if project.get("status") not in PROJECT_STATUSES:
++                errors.append(f"{path}: invalid project status.")
++            if not isinstance(project.get("technologies", []), list):
++                errors.append(f"{path}: 'technologies' must be a list.")
++            if not isinstance(project.get("tags", []), list):
++                errors.append(f"{path}: 'tags' must be a list.")
++            elif not all(isinstance(tag, str) and tag for tag in project.get("tags", [])):
++                errors.append(f"{path}: tags must contain non-empty strings.")
++            self._validate_date(project.get("start_date"), path, "start_date", errors)
++            self._validate_date(project.get("completion_date"), path, "completion_date", errors)
++            self._validate_date_order(project.get("start_date"), project.get("completion_date"), path, errors)
++            self._validate_content_files(project.get("content_files"), path.parent, path, errors)
++            self._validate_local_media(project.get("cover_image"), path, errors)
++            if project.get("cover_image"):
++                cover_alt = project.get("cover_alt")
++                if not isinstance(cover_alt, dict) or not any(
++                    language in cover_alt and isinstance(cover_alt[language], str) and cover_alt[language]
++                    for language in SUPPORTED_LANGUAGES
++                ):
++                    errors.append(f"{path}: a cover image requires at least one localized alt text.")
++            media_items = project.get("media", [])
++            if not isinstance(media_items, list):
++                errors.append(f"{path}: 'media' must be a list.")
++                media_items = []
++            for media in media_items:
++                if isinstance(media, str):
++                    self._validate_local_media(media, path, errors)
++                elif isinstance(media, dict):
++                    self._validate_local_media(media.get("path"), path, errors)
++                else:
++                    errors.append(f"{path}: media entries must be paths or objects.")
++        return errors
++
++    def validate_posts(self) -> list[str]:
++        """Validate blog post metadata and body files, including drafts."""
++        errors: list[str] = []
++        directory = self.content_root / "posts"
++        if not directory.exists():
++            return errors
++        seen_ids: set[str] = set()
++        seen_slugs: dict[str, set[str]] = {language: set() for language in SUPPORTED_LANGUAGES}
++        for path in sorted(directory.glob("*/post.json")):
++            post = self._read_json(path, errors)
++            if post is None:
++                continue
++            post_id = post.get("id")
++            if not isinstance(post_id, str) or not post_id:
++                errors.append(f"{path}: 'id' must be a non-empty string.")
++            elif post_id in seen_ids:
++                errors.append(f"{path}: duplicate post id '{post_id}'.")
++            seen_ids.add(post_id)
++            self._validate_slug_map(post.get("slug"), path, errors)
++            for language, slug in (post.get("slug") or {}).items():
++                if language in seen_slugs and isinstance(slug, str):
++                    if slug in seen_slugs[language]:
++                        errors.append(f"{path}: duplicate post slug '{slug}' for '{language}'.")
++                    seen_slugs[language].add(slug)
++            for field in ("title", "description"):
++                value = post.get(field)
++                if not isinstance(value, dict) or not any(
++                    language in value and isinstance(value[language], str) and value[language]
++                    for language in SUPPORTED_LANGUAGES
++                ):
++                    errors.append(f"{path}: '{field}' must provide at least one localized value.")
++            if post.get("status") not in POST_STATUSES:
++                errors.append(f"{path}: invalid post status.")
++            if post.get("language") not in SUPPORTED_LANGUAGES:
++                errors.append(f"{path}: invalid post language.")
++            if not isinstance(post.get("tags", []), list) or not all(
++                isinstance(tag, str) and tag for tag in post.get("tags", [])
++            ):
++                errors.append(f"{path}: 'tags' must be a list of non-empty strings.")
++            self._validate_date(post.get("published_at"), path, "published_at", errors)
++            self._validate_date(post.get("updated_at"), path, "updated_at", errors)
++            self._validate_content_files(post.get("content_files"), path.parent, path, errors)
++            self._validate_local_media(post.get("cover_image"), path, errors)
++            if post.get("status") == "published" and not post.get("published_at"):
++                errors.append(f"{path}: published posts require 'published_at'.")
++            self._validate_date_order(post.get("published_at"), post.get("updated_at"), path, errors)
++            if post.get("status") == "published" and post.get("language") not in (
++                post.get("content_files") or {}
++            ):
++                errors.append(f"{path}: published post must have a Markdown file for its primary language.")
++        return errors
++
++    def _read_json(self, path: Path, errors: list[str]) -> dict[str, Any] | None:
++        """Read a JSON object, recording errors instead of aborting validation."""
++        if not path.is_file():
++            errors.append(f"{path}: file is missing.")
++            return None
++        try:
++            import json
++
++            with path.open(encoding="utf-8") as file:
++                data = json.load(file)
++            if not isinstance(data, dict):
++                errors.append(f"{path}: JSON root must be an object.")
++                return None
++            return data
++        except (OSError, ValueError) as error:
++            errors.append(f"{path}: cannot read JSON ({error}).")
++            return None
++
++    def _validate_slug_map(self, value: Any, path: Path, errors: list[str]) -> None:
++        """Ensure localized slug mappings are valid and present."""
++        if not isinstance(value, dict) or not value:
++            errors.append(f"{path}: 'slug' must be a non-empty object keyed by language.")
++            return
++        for language, slug in value.items():
++            if language not in SUPPORTED_LANGUAGES:
++                errors.append(f"{path}: unsupported slug language '{language}'.")
++            if not isinstance(slug, str) or not SLUG_PATTERN.fullmatch(slug):
++                errors.append(f"{path}: invalid slug for '{language}'.")
++
++    def _validate_content_files(
++        self, file_map: Any, content_directory: Path, metadata_path: Path, errors: list[str]
++    ) -> None:
++        """Check localized Markdown references and ensure files exist within their folder."""
++        if not isinstance(file_map, dict):
++            errors.append(f"{metadata_path}: 'content_files' must be an object.")
++            return
++        if not file_map:
++            errors.append(f"{metadata_path}: at least one localized Markdown file is required.")
++        for language, file_name in file_map.items():
++            if language not in SUPPORTED_LANGUAGES:
++                errors.append(f"{metadata_path}: unsupported content language '{language}'.")
++            if not isinstance(file_name, str) or not file_name:
++                errors.append(f"{metadata_path}: invalid content file for '{language}'.")
++                continue
++            candidate = (content_directory / file_name).resolve()
++            if content_directory.resolve() not in candidate.parents:
++                errors.append(f"{metadata_path}: content file path escapes its directory.")
++            elif not candidate.is_file():
++                errors.append(f"{metadata_path}: content file '{file_name}' is missing.")
++
++    def _validate_local_media(self, media_path: Any, metadata_path: Path, errors: list[str]) -> None:
++        """Validate media paths as local files within the project repository."""
++        if media_path is None:
++            return
++        if not isinstance(media_path, str) or not media_path:
++            errors.append(f"{metadata_path}: media path must be a non-empty string or null.")
++            return
++        if media_path.startswith(("http://", "https://")):
++            errors.append(f"{metadata_path}: external media URLs are not allowed: '{media_path}'.")
++            return
++        candidate = (self.content_root.parent / media_path).resolve()
++        repository_root = self.content_root.parent.resolve()
++        if repository_root not in candidate.parents and candidate != repository_root:
++            errors.append(f"{metadata_path}: media path escapes repository root.")
++        elif not candidate.is_file():
++            errors.append(f"{metadata_path}: media file '{media_path}' is missing.")
++
++    def _validate_date(
++        self, value: Any, path: Path, field: str, errors: list[str], required: bool = False
++    ) -> None:
++        """Validate ISO date values."""
++        if value is None and not required:
++            return
++        if not isinstance(value, str):
++            errors.append(f"{path}: '{field}' must be an ISO date string or null.")
++            return
++        try:
++            date.fromisoformat(value)
++        except ValueError:
++            errors.append(f"{path}: '{field}' is not a valid ISO date.")
++
++    def _validate_date_order(
++        self, start_date: Any, completion_date: Any, path: Path, errors: list[str]
++    ) -> None:
++        """Ensure completion date is not earlier than the start date."""
++        if not start_date or not completion_date:
++            return
++        try:
++            if date.fromisoformat(completion_date) < date.fromisoformat(start_date):
++                errors.append(f"{path}: completion_date cannot precede start_date.")
++        except (TypeError, ValueError):
++            # Date-format errors are reported by the dedicated date checks.
++            return
++
++    def validate_relationships(self) -> list[str]:
++        """Validate project/post relationship IDs against existing content."""
++        errors: list[str] = []
++        project_ids = {
++            project.get("id")
++            for project in self._load_metadata("projects", "project.json", errors)
++        }
++        post_ids = {
++            post.get("id")
++            for post in self._load_metadata("posts", "post.json", errors)
++        }
++
++        settings_path = self.content_root / "site" / "settings.json"
++        settings = self._read_json(settings_path, errors)
++        if settings:
++            featured_ids = settings.get("home", {}).get("featured_project_ids", [])
++            if not isinstance(featured_ids, list):
++                errors.append(f"{settings_path}: 'featured_project_ids' must be a list.")
++            else:
++                for project_id in featured_ids:
++                    if project_id not in project_ids:
++                        errors.append(f"{settings_path}: featured project '{project_id}' does not exist.")
++
++        for path in sorted((self.content_root / "projects").glob("*/project.json")):
++            project = self._read_json(path, errors)
++            if not project:
++                continue
++            for post_id in project.get("related_post_ids", []):
++                if post_id not in post_ids:
++                    errors.append(f"{path}: related post '{post_id}' does not exist.")
++
++        for path in sorted((self.content_root / "posts").glob("*/post.json")):
++            post = self._read_json(path, errors)
++            if not post:
++                continue
++            related_project = post.get("related_project_id")
++            if related_project and related_project not in project_ids:
++                errors.append(f"{path}: related project '{related_project}' does not exist.")
++        return errors
++
++    def _load_metadata(self, directory_name: str, file_name: str, errors: list[str]) -> list[dict[str, Any]]:
++        """Read metadata records for relationship checks."""
++        records: list[dict[str, Any]] = []
++        directory = self.content_root / directory_name
++        if not directory.exists():
++            return records
++        for path in sorted(directory.glob(f"*/{file_name}")):
++            data = self._read_json(path, errors)
++            if data is not None:
++                records.append(data)
++        return records
+diff --git a/app/services/localization.py b/app/services/localization.py
+new file mode 100644
+index 0000000..05ab014
+--- /dev/null
++++ b/app/services/localization.py
+@@ -0,0 +1,33 @@
++"""Helpers for resolving localized content and language fallback behavior."""
++
++from typing import Any
++
++
++SUPPORTED_LANGUAGES = ("en", "pt-br")
++DEFAULT_LANGUAGE = "en"
++
++
++def normalize_language(language: str | None) -> str:
++    """Normalize common language identifiers to the site's supported codes."""
++    if not language:
++        return DEFAULT_LANGUAGE
++    normalized = language.strip().lower().replace("_", "-")
++    if normalized in SUPPORTED_LANGUAGES:
++        return normalized
++    if normalized.startswith("pt"):
++        return "pt-br"
++    return DEFAULT_LANGUAGE
++
++
++def localized_value(value: Any, language: str, fallback_language: str = DEFAULT_LANGUAGE) -> Any:
++    """Return the requested translation, falling back to the configured language."""
++    if not isinstance(value, dict):
++        return value
++    selected_language = normalize_language(language)
++    fallback = normalize_language(fallback_language)
++    return value.get(selected_language, value.get(fallback))
++
++
++def find_translation_url(urls: dict[str, str], language: str) -> str | None:
++    """Return a URL for the requested language, if one was provided."""
++    return urls.get(normalize_language(language))
+diff --git a/app/services/markdown_renderer.py b/app/services/markdown_renderer.py
+new file mode 100644
+index 0000000..bbe4329
+--- /dev/null
++++ b/app/services/markdown_renderer.py
+@@ -0,0 +1,15 @@
++"""Render Markdown content to HTML using markdown-it-py."""
++
++from markdown_it import MarkdownIt
++
++
++class MarkdownRenderer:
++    """Convert Markdown text into HTML with HTML tags disabled by default."""
++
++    def __init__(self) -> None:
++        # CommonMark provides predictable Markdown syntax without enabling raw HTML.
++        self._parser = MarkdownIt("commonmark", {"html": False, "linkify": False})
++
++    def render(self, markdown_text: str) -> str:
++        """Render a Markdown string into HTML."""
++        return self._parser.render(markdown_text)
+diff --git a/build.py b/build.py
+index 45b2440..afddf3b 100644
+--- a/build.py
++++ b/build.py
+@@ -1,23 +1,31 @@
+-
+-from pathlib import Path
+-
+-from flask_frozen import Freezer
+-
+-from app import create_app
+-
+-app = create_app()
+-
+-# Resolve the project root directory.
+-PROJECT_ROOT = Path(__file__).resolve().parent
+-
+-# Configure the static website output directory.
+-app.config["FREEZER_DESTINATION"] = str(PROJECT_ROOT / "docs")
+-app.config["FREEZER_RELATIVE_URLS"] = True
+-
+-# Initialize the static site generator.
+-freezer = Freezer(app)
+-
+-
+-if __name__ == "__main__":
+-    # Generate the static website.
+-    freezer.freeze()
++"""Build the static website with Frozen-Flask."""
++
++from pathlib import Path
++
++
++from flask_frozen import Freezer
++
++from app import create_app
++from app.services.content_validator import ContentValidator, ContentValidationError
++
++app = create_app()
++
++# Resolve the project root directory.
++PROJECT_ROOT = Path(__file__).resolve().parent
++
++# Configure the static website output directory.
++app.config["FREEZER_DESTINATION"] = str(PROJECT_ROOT / "docs")
++app.config["FREEZER_RELATIVE_URLS"] = True
++
++# Initialize the static site generator.
++freezer = Freezer(app)
++
++
++if __name__ == "__main__":
++    # Validate content before generating public pages.
++    validation_errors = ContentValidator(PROJECT_ROOT / "content").validate_all()
++    if validation_errors:
++        raise ContentValidationError(validation_errors)
++
++    # Generate the static website only when content is valid.
++    freezer.freeze()
+diff --git a/content/posts/README.md b/content/posts/README.md
+new file mode 100644
+index 0000000..9805650
+--- /dev/null
++++ b/content/posts/README.md
+@@ -0,0 +1,3 @@
++# Blog post content
++
++Create one folder per post, using its stable ID, and place `post.json` plus one or more localized Markdown files inside it. See `CONTENT_MODEL.md` for the metadata template and field rules.
+diff --git a/content/profile/en.json b/content/profile/en.json
+new file mode 100644
+index 0000000..2256de5
+--- /dev/null
++++ b/content/profile/en.json
+@@ -0,0 +1,20 @@
++{
++  "name": "Henrique Tavella",
++  "full_name": "Henrique Ribeiro da Cunha Tavella",
++  "presentation": "Software development is a path: a way to help people by giving their ideas the opportunity to become something real.",
++  "education": [],
++  "skills": [
++    {"name": "Web Development", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
++    {"name": "Desktop Development", "technologies": ["Java", "Python", "C#"]},
++    {"name": "Mobile Development", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
++    {"name": "Databases", "technologies": ["MySQL", "SQLite"]},
++    {"name": "Tools", "technologies": ["Git", "GitHub", "VS Code"]}
++  ],
++  "professional_objectives": [],
++  "avatar": null,
++  "links": [
++    {"label": "Email", "url": "mailto:henriquetavella0@gmail.com"},
++    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
++    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
++  ]
++}
+diff --git a/content/profile/pt-br.json b/content/profile/pt-br.json
+new file mode 100644
+index 0000000..7982e7d
+--- /dev/null
++++ b/content/profile/pt-br.json
+@@ -0,0 +1,20 @@
++{
++  "name": "Henrique Tavella",
++  "full_name": "Henrique Ribeiro da Cunha Tavella",
++  "presentation": "Para mim, o desenvolvimento de software é um caminho: uma forma de ajudar pessoas, dando às suas ideias a oportunidade de se tornarem realidade.",
++  "education": [],
++  "skills": [
++    {"name": "Desenvolvimento Web", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
++    {"name": "Desenvolvimento para Desktop", "technologies": ["Java", "Python", "C#"]},
++    {"name": "Desenvolvimento Mobile", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
++    {"name": "Bancos de Dados", "technologies": ["MySQL", "SQLite"]},
++    {"name": "Ferramentas", "technologies": ["Git", "GitHub", "VS Code"]}
++  ],
++  "professional_objectives": [],
++  "avatar": null,
++  "links": [
++    {"label": "E-mail", "url": "mailto:henriquetavella0@gmail.com"},
++    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
++    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
++  ]
++}
+diff --git a/content/projects/pong-by-allevat/en.md b/content/projects/pong-by-allevat/en.md
+new file mode 100644
+index 0000000..eddf1f8
+--- /dev/null
++++ b/content/projects/pong-by-allevat/en.md
+@@ -0,0 +1,10 @@
++## Project objective
++
++Explore Pygame by reproducing a well-known game.
++
++## Implemented features
++
++- Local matches for two players or against the computer
++- Selectable visual themes
++- Adjustable score target
++- Ball speed increases during a match
+diff --git a/content/projects/pong-by-allevat/project.json b/content/projects/pong-by-allevat/project.json
+new file mode 100644
+index 0000000..9442a2d
+--- /dev/null
++++ b/content/projects/pong-by-allevat/project.json
+@@ -0,0 +1,47 @@
++{
++  "id": "pong-by-allevat",
++  "slug": {
++    "en": "pong-by-allevat",
++    "pt-br": "pong-by-allevat"
++  },
++  "title": {
++    "en": "Pong By Allevat",
++    "pt-br": "Pong By Allevat"
++  },
++  "short_description": {
++    "en": "A reproduction of the classic Pong game, developed to explore Pygame through a familiar and concrete project.",
++    "pt-br": "Uma reprodução do clássico Pong, desenvolvida para explorar o Pygame por meio de um projeto conhecido e concreto."
++  },
++  "status": "completed",
++  "featured": true,
++  "technologies": [
++    "Python 3.12",
++    "Pygame"
++  ],
++  "tags": [
++    "game-development",
++    "python"
++  ],
++  "start_date": null,
++  "completion_date": null,
++  "cover_image": "app/static/images/pong-by-allevat.svg",
++  "media": [],
++  "links": {
++    "github": null,
++    "demo": null
++  },
++  "related_post_ids": [],
++  "order": 10,
++  "content_files": {
++    "en": "en.md",
++    "pt-br": "pt-br.md"
++  },
++  "cover_alt": {
++    "en": "Illustration of a Pong match with two paddles, a ball, and a score of 3 to 2.",
++    "pt-br": "Ilustração de uma partida de Pong com duas raquetes, uma bola e placar de 3 a 2."
++  },
++  "cover_caption": {
++    "en": "Illustrative gameplay preview · Classic theme",
++    "pt-br": "Prévia ilustrativa da partida · tema Clássico"
++  }
++}
+diff --git a/content/projects/pong-by-allevat/pt-br.md b/content/projects/pong-by-allevat/pt-br.md
+new file mode 100644
+index 0000000..d78c05f
+--- /dev/null
++++ b/content/projects/pong-by-allevat/pt-br.md
+@@ -0,0 +1,10 @@
++## Objetivo do projeto
++
++Explorar o Pygame reproduzindo um jogo conhecido.
++
++## Funcionalidades implementadas
++
++- Partidas locais para dois jogadores ou contra o computador
++- Temas visuais selecionáveis
++- Pontuação-alvo ajustável
++- A bola acelera ao longo da partida
+diff --git a/content/site/en.json b/content/site/en.json
+new file mode 100644
+index 0000000..c23978f
+--- /dev/null
++++ b/content/site/en.json
+@@ -0,0 +1,6 @@
++{
++  "title": "Henrique Tavella | Portfolio",
++  "description": "Henrique Tavella — Developer Portfolio",
++  "navigation": {"home": "Home", "projects": "Projects", "blog": "Blog", "about": "About"},
++  "footer": {"signature": "<< Allevat >>", "copyright": "© {year} Henrique Tavella"}
++}
+diff --git a/content/site/pt-br.json b/content/site/pt-br.json
+new file mode 100644
+index 0000000..dcb64b5
+--- /dev/null
++++ b/content/site/pt-br.json
+@@ -0,0 +1,6 @@
++{
++  "title": "Henrique Tavella | Portfólio",
++  "description": "Portfólio de Henrique Tavella",
++  "navigation": {"home": "Início", "projects": "Projetos", "blog": "Blog", "about": "Sobre"},
++  "footer": {"signature": "<< Allevat >>", "copyright": "© {year} Henrique Tavella"}
++}
+diff --git a/content/site/settings.json b/content/site/settings.json
+new file mode 100644
+index 0000000..c468bda
+--- /dev/null
++++ b/content/site/settings.json
+@@ -0,0 +1,18 @@
++{
++  "site_name": "Allevat",
++  "default_language": "en",
++  "supported_languages": ["en", "pt-br"],
++  "home": {
++    "featured_project_ids": ["pong-by-allevat"],
++    "featured_project_count": 3,
++    "recent_post_count": 3
++  },
++  "theme": {
++    "default": "system",
++    "available": ["light", "dark"]
++  },
++  "content": {
++    "projects_directory": "projects",
++    "posts_directory": "posts"
++  }
++}
+diff --git a/pyproject.toml b/pyproject.toml
+new file mode 100644
+index 0000000..8e30b1e
+--- /dev/null
++++ b/pyproject.toml
+@@ -0,0 +1,10 @@
++[tool.pytest.ini_options]
++testpaths = ["tests"]
++python_files = ["test_*.py"]
++addopts = "-ra"
++
++[tool.ruff]
++line-length = 100
++
++[tool.ruff.lint]
++select = ["E", "F", "I"]
+diff --git a/requirements-dev.txt b/requirements-dev.txt
+new file mode 100644
+index 0000000..5e89329
+--- /dev/null
++++ b/requirements-dev.txt
+@@ -0,0 +1,3 @@
++-r requirements.txt
++pytest
++ruff
+diff --git a/requirements.txt b/requirements.txt
+index d51930a..a5d8091 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,2 +1,3 @@
+-Flask
+-Frozen-Flask
+\ No newline at end of file
++Flask
++Frozen-Flask
++markdown-it-py
+diff --git a/scripts/validate_content.py b/scripts/validate_content.py
+new file mode 100644
+index 0000000..179166e
+--- /dev/null
++++ b/scripts/validate_content.py
+@@ -0,0 +1,29 @@
++"""Run content validation independently from the website build."""
++
++from pathlib import Path
++import sys
++
++PROJECT_ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(PROJECT_ROOT))
++
++from app.services.content_validator import ContentValidator
++
++
++
++def main() -> int:
++    """Validate all content files and report the result."""
++    validator = ContentValidator(PROJECT_ROOT / "content")
++    errors = validator.validate_all()
++
++    if errors:
++        print("Content validation failed:")
++        for error in errors:
++            print(f"- {error}")
++        return 1
++
++    print("Content validation passed.")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/tests/test_content_loader.py b/tests/test_content_loader.py
+new file mode 100644
+index 0000000..f4763c5
+--- /dev/null
++++ b/tests/test_content_loader.py
+@@ -0,0 +1,78 @@
++"""Tests for loading content files from the content directory."""
++
++from pathlib import Path
++
++import pytest
++
++from app.services.content_loader import ContentLoader
++
++
++CONTENT_ROOT = Path(__file__).parents[1] / "content"
++
++
++def test_load_profile_for_supported_language() -> None:
++    loader = ContentLoader(CONTENT_ROOT)
++
++    profile = loader.load_profile("pt-br")
++
++    assert profile["name"] == "Henrique Tavella"
++    assert profile["skills"]
++    assert profile["links"]
++
++
++def test_load_site_settings_and_localized_text() -> None:
++    loader = ContentLoader(CONTENT_ROOT)
++
++    settings = loader.load_site_settings()
++    localized = loader.load_site_text("en")
++
++    assert settings["default_language"] == "en"
++    assert localized["navigation"]["blog"] == "Blog"
++
++
++def test_load_project_metadata_and_markdown() -> None:
++    loader = ContentLoader(CONTENT_ROOT)
++    project = loader.load_projects()[0]
++
++    body = loader.load_project_markdown(project, "pt-br")
++
++    assert project["id"] == "pong-by-allevat"
++    assert "Objetivo do projeto" in body
++
++
++def test_loader_rejects_paths_outside_content_root(tmp_path: Path) -> None:
++    content_root = tmp_path / "content"
++    content_root.mkdir()
++    outside_file = tmp_path / "private.json"
++    outside_file.write_text("{}", encoding="utf-8")
++
++    loader = ContentLoader(content_root)
++
++    with pytest.raises(ValueError, match="escapes content root"):
++        loader.load_json(outside_file)
++
++
++def test_loader_excludes_drafts_when_public_posts_are_requested(tmp_path: Path) -> None:
++    import json
++
++    posts_directory = tmp_path / "posts"
++    draft_directory = posts_directory / "draft-post"
++    published_directory = posts_directory / "published-post"
++    draft_directory.mkdir(parents=True)
++    published_directory.mkdir(parents=True)
++
++    # Create minimal metadata records to verify draft filtering behavior.
++    (draft_directory / "post.json").write_text(
++        json.dumps({"id": "draft-post", "status": "draft"}), encoding="utf-8"
++    )
++    (published_directory / "post.json").write_text(
++        json.dumps({"id": "published-post", "status": "published"}), encoding="utf-8"
++    )
++
++    loader = ContentLoader(tmp_path)
++
++    public_posts = loader.load_posts(include_drafts=False)
++    all_posts = loader.load_posts(include_drafts=True)
++
++    assert [post["id"] for post in public_posts] == ["published-post"]
++    assert len(all_posts) == 2
+diff --git a/tests/test_content_validator.py b/tests/test_content_validator.py
+new file mode 100644
+index 0000000..5845f40
+--- /dev/null
++++ b/tests/test_content_validator.py
+@@ -0,0 +1,76 @@
++"""Tests for structural and integrity validation of content files."""
++
++from pathlib import Path
++
++
++from app.services.content_validator import ContentValidator
++
++
++CONTENT_ROOT = Path(__file__).parents[1] / "content"
++
++
++def test_existing_content_passes_validation() -> None:
++    validator = ContentValidator(CONTENT_ROOT)
++
++    assert validator.validate_all() == []
++
++
++def test_invalid_slug_is_reported(tmp_path: Path) -> None:
++    content_root = tmp_path / "content"
++    (content_root / "projects" / "invalid-project").mkdir(parents=True)
++    (content_root / "projects" / "invalid-project" / "project.json").write_text(
++        '{"id":"invalid-project","slug":{"en":"Bad Slug","pt-br":"slug-invalido"}}',
++        encoding="utf-8",
++    )
++
++    validator = ContentValidator(content_root)
++    errors = validator.validate_projects()
++
++    assert any("invalid slug" in error for error in errors)
++
++
++def test_missing_markdown_file_is_reported(tmp_path: Path) -> None:
++    content_root = tmp_path / "content"
++    project_directory = content_root / "projects" / "missing-body"
++    project_directory.mkdir(parents=True)
++    metadata = {
++        "id": "missing-body",
++        "slug": {"en": "missing-body", "pt-br": "missing-body"},
++        "title": {"en": "Missing Body", "pt-br": "Sem conteúdo"},
++        "short_description": {"en": "Desc", "pt-br": "Desc"},
++        "status": "completed",
++        "content_files": {"en": "en.md", "pt-br": "pt-br.md"},
++    }
++    import json
++
++    (project_directory / "project.json").write_text(json.dumps(metadata), encoding="utf-8")
++
++    validator = ContentValidator(content_root)
++    errors = validator.validate_projects()
++
++
++    assert any("content file 'en.md' is missing" in error for error in errors)
++
++
++def test_date_order_validation_reports_completion_before_start(tmp_path: Path) -> None:
++    content_root = tmp_path / "content"
++    project_directory = content_root / "projects" / "bad-dates"
++    project_directory.mkdir(parents=True)
++    metadata = {
++        "id": "bad-dates",
++        "slug": {"en": "bad-dates", "pt-br": "bad-dates"},
++        "title": {"en": "Bad Dates", "pt-br": "Datas inválidas"},
++        "short_description": {"en": "Desc", "pt-br": "Desc"},
++        "status": "completed",
++        "start_date": "2026-05-01",
++        "completion_date": "2026-04-01",
++        "content_files": {},
++    }
++    import json
++
++    (project_directory / "project.json").write_text(json.dumps(metadata), encoding="utf-8")
++
++    errors = ContentValidator(content_root).validate_projects()
++
++
++    assert any("completion_date cannot precede start_date" in error for error in errors)
+diff --git a/tests/test_localization.py b/tests/test_localization.py
+new file mode 100644
+index 0000000..6819360
+--- /dev/null
++++ b/tests/test_localization.py
+@@ -0,0 +1,22 @@
++"""Tests for language normalization and localized value lookup."""
++
++from app.services.localization import find_translation_url, localized_value, normalize_language
++
++
++def test_language_normalization_accepts_common_variants() -> None:
++    assert normalize_language("PT_BR") == "pt-br"
++    assert normalize_language("pt") == "pt-br"
++    assert normalize_language("EN-us") == "en"
++    assert normalize_language(None) == "en"
++
++
++def test_localized_value_uses_fallback_when_translation_is_missing() -> None:
++    value = {"en": "English text"}
++
++    assert localized_value(value, "pt-br") == "English text"
++
++
++def test_translation_url_lookup_returns_none_when_missing() -> None:
++    urls = {"en": "/blog/example/"}
++
++    assert find_translation_url(urls, "pt-br") is None
+diff --git a/tests/test_markdown_renderer.py b/tests/test_markdown_renderer.py
+new file mode 100644
+index 0000000..eab6ba4
+--- /dev/null
++++ b/tests/test_markdown_renderer.py
+@@ -0,0 +1,22 @@
++"""Tests for Markdown-to-HTML conversion."""
++
++from app.services.markdown_renderer import MarkdownRenderer
++
++
++def test_renderer_converts_commonmark_content() -> None:
++    renderer = MarkdownRenderer()
++
++    html = renderer.render("# Title\n\n- First\n- Second\n\n`inline code`")
++
++    assert "<h1>Title</h1>" in html
++    assert "<li>First</li>" in html
++    assert "<code>inline code</code>" in html
++
++
++def test_renderer_does_not_allow_raw_html() -> None:
++    renderer = MarkdownRenderer()
++
++    html = renderer.render("<script>alert('x')</script>")
++
++    assert "<script>" not in html
++    assert "&lt;script&gt;" in html

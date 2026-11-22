@@ -1,0 +1,20 @@
+{
+  "name": "Henrique Tavella",
+  "full_name": "Henrique Ribeiro da Cunha Tavella",
+  "presentation": "Software development is a path: a way to help people by giving their ideas the opportunity to become something real.",
+  "education": [],
+  "skills": [
+    {"name": "Web Development", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
+    {"name": "Desktop Development", "technologies": ["Java", "Python", "C#"]},
+    {"name": "Mobile Development", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
+    {"name": "Databases", "technologies": ["MySQL", "SQLite"]},
+    {"name": "Tools", "technologies": ["Git", "GitHub", "VS Code"]}
+  ],
+  "professional_objectives": [],
+  "avatar": null,
+  "links": [
+    {"label": "Email", "url": "mailto:henriquetavella0@gmail.com"},
+    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
+    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
+  ]
+}

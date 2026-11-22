@@ -1,0 +1,6 @@
+{
+  "title": "Henrique Tavella | Portfólio",
+  "description": "Portfólio de Henrique Tavella",
+  "navigation": {"home": "Início", "projects": "Projetos", "blog": "Blog", "about": "Sobre"},
+  "footer": {"signature": "<< Allevat >>", "copyright": "© {year} Henrique Tavella"}
+}

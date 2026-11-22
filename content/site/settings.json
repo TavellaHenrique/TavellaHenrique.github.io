@@ -1,0 +1,18 @@
+{
+  "site_name": "Allevat",
+  "default_language": "en",
+  "supported_languages": ["en", "pt-br"],
+  "home": {
+    "featured_project_ids": ["pong-by-allevat"],
+    "featured_project_count": 3,
+    "recent_post_count": 3
+  },
+  "theme": {
+    "default": "system",
+    "available": ["light", "dark"]
+  },
+  "content": {
+    "projects_directory": "projects",
+    "posts_directory": "posts"
+  }
+}
