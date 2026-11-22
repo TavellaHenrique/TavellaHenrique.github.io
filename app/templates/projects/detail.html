@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<article class="project-detail section-container" aria-labelledby="project-title">
+    <a
+        class="project-back-link"
+        href="{{ url_for('main.projects') if content.language == 'en' else url_for('main.projects_pt_br') }}"
+    >
+        {{ site_text.projects.back_to_projects }}
+    </a>
+
+    <header class="project-detail-header">
+        <div class="project-detail-meta">
+            <span class="project-status project-status-{{ project.status }}">
+                {{ site_text.projects.status.get(project.status, site_text.projects.status.unknown) }}
+            </span>
+
+            {% if project.tags %}
+                {% for tag in project.tags %}
+                    <span class="project-detail-tag">{{ tag }}</span>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <h1 id="project-title">{{ project.title }}</h1>
+        <p class="project-detail-description">{{ project.description }}</p>
+
+        {% if project.technologies %}
+            <ul class="project-detail-technologies" aria-label="{{ site_text.projects.technologies }}">
+                {% for technology in project.technologies %}
+                    <li>{{ technology }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </header>
+
+    {% if project.cover_image %}
+        <figure class="project-detail-cover">
+            <img
+                src="{{ url_for('static', filename=project.cover_image) }}"
+                alt="{{ project.cover_alt }}"
+            >
+            {% if project.cover_caption %}
+                <figcaption>{{ project.cover_caption }}</figcaption>
+            {% endif %}
+        </figure>
+    {% endif %}
+
+    <div class="project-detail-body markdown-content">
+        {{ project.content_html | safe }}
+    </div>
+
+    {% if project.links.github or project.links.demo %}
+        <section class="project-detail-links" aria-label="{{ site_text.projects.project_links }}">
+            {% if project.links.github %}
+                <a href="{{ project.links.github }}" target="_blank" rel="noopener noreferrer">
+                    {{ site_text.projects.source_code }}
+                    <span aria-hidden="true">↗</span>
+                </a>
+            {% endif %}
+
+            {% if project.links.demo %}
+                <a href="{{ project.links.demo }}" target="_blank" rel="noopener noreferrer">
+                    {{ site_text.projects.live_demo }}
+                    <span aria-hidden="true">↗</span>
+                </a>
+            {% endif %}
+        </section>
+    {% endif %}
+
+    <footer class="project-detail-footer">
+        <a
+            class="project-back-link"
+            href="{{ url_for('main.projects') if content.language == 'en' else url_for('main.projects_pt_br') }}"
+        >
+            {{ site_text.projects.back_to_projects }}
+        </a>
+    </footer>
+</article>
+{% endblock %}

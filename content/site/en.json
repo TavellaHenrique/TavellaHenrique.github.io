@@ -18,7 +18,11 @@
       "tags": "Tags"
     },
     "technologies": "Technologies",
-    "source_code": "Source code"
+    "source_code": "Source code",
+    "back_to_projects": "Back to projects",
+    "project_links": "Project links",
+    "live_demo": "Live demo",
+    "view_details": "View project"
   },
   "footer": {
     "signature": "<< Allevat >>",

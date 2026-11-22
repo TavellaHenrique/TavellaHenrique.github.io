@@ -38,6 +38,16 @@
                         </div>
 
                         <h2>{{ project.title }}</h2>
+                        <a
+                            class="project-list-detail-link"
+                            href="{{ url_for('main.project_detail', slug=project.slug)
+                                if content.language == 'en'
+                                else url_for('main.project_detail_pt_br', slug=project.slug) 
+                            }}"
+                        >
+                            {{ site_text.projects.view_details }}
+                        </a>
+
                         <p class="project-list-description">{{ project.description }}</p>
 
                         {% if project.technologies %}

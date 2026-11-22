@@ -141,3 +141,66 @@ def test_projects_page_does_not_render_empty_github_link(client):
     html = response.get_data(as_text=True)
 
     assert "Source code" not in html
+
+
+def test_english_project_detail_page(client):
+    """Verify the English project detail page renders its metadata and body."""
+    response = client.get("/projects/pong-by-allevat/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Pong By Allevat" in html
+    assert "Python 3.12" in html
+    assert "Pygame" in html
+
+    # Verify Markdown headings and lists are rendered as HTML.
+    assert "<h2>Project objective</h2>" in html
+    assert "<h2>Implemented features</h2>" in html
+    assert "<li>Selectable visual themes</li>" in html
+
+
+def test_portuguese_project_detail_page(client):
+    """Verify the Portuguese project detail page renders localized content."""
+    response = client.get("/pt-br/projetos/pong-by-allevat/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Pong By Allevat" in html
+    assert "<h2>Objetivo do projeto</h2>" in html
+    assert "<h2>Funcionalidades implementadas</h2>" in html
+    assert "<li>Temas visuais selecionáveis</li>" in html
+
+
+def test_project_detail_language_switcher_preserves_project(client):
+    """Verify language switching links to the equivalent project page."""
+    english_response = client.get("/projects/pong-by-allevat/")
+    portuguese_response = client.get("/pt-br/projetos/pong-by-allevat/")
+
+    english_html = english_response.get_data(as_text=True)
+    portuguese_html = portuguese_response.get_data(as_text=True)
+
+    assert 'href="/pt-br/projetos/pong-by-allevat/"' in english_html
+    assert 'href="/projects/pong-by-allevat/"' in portuguese_html
+
+
+def test_project_listing_links_to_details(client):
+    """Verify project cards link to their detail pages."""
+    english_response = client.get("/projects/")
+    portuguese_response = client.get("/pt-br/projetos/")
+
+    assert 'href="/projects/pong-by-allevat/"' in (english_response.get_data(as_text=True))
+    assert 'href="/pt-br/projetos/pong-by-allevat/"' in (portuguese_response.get_data(as_text=True))
+
+
+@pytest.mark.parametrize(
+    "route",
+    [
+        "/projects/nonexistent-project/",
+        "/pt-br/projetos/projeto-inexistente/",
+    ],
+)
+def test_unknown_project_slug_returns_404(client, route):
+    """Verify invalid project slugs return a not-found response."""
+    response = client.get(route)
+
+    assert response.status_code == 404

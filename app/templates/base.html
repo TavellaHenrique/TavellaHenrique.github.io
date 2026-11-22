@@ -117,7 +117,13 @@
 
     <footer class="site-footer">
         <p>{{ content.footer.copyright.format(year=content.footer.year) }}</p>
-        <p class="logo">{{ content.contact.signature }}</p>
+        <a
+            class="logo"
+            href="{{ url_for('main.index') if content.language == 'en' else url_for('main.index_pt_br') }}"
+            aria-label="{{ content.accessibility.home_link }}"
+        >
+            {{ content.site.brand }}
+        </a>
     </footer>
 </body>
 </html>
