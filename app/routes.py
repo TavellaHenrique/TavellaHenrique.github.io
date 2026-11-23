@@ -132,6 +132,47 @@ def get_project_details(project: dict, language: str) -> dict:
         language_key,
     )
 
+    # Collect published posts related to this project.
+    related_post_ids = set(project.get("related_post_ids", []))
+    related_posts = []
+
+    for post_data in content_loader.load_posts(include_drafts=False):
+        post_id = post_data.get("id")
+
+        # Support relationships defined from either side.
+        if post_id not in related_post_ids and post_data.get("related_project_id") != project.get(
+            "id"
+        ):
+            continue
+
+        post_slug = post_data.get("slug", {}).get(language_key)
+        post_title = post_data.get("title", {}).get(language_key)
+
+        # Only include posts available in the requested language.
+        if (
+            language_key not in post_data.get("content_files", {})
+            or not post_slug
+            or not post_title
+        ):
+            continue
+
+        post_endpoint = "main.post_detail" if language_key == "en" else "main.post_detail_pt_br"
+
+        related_posts.append(
+            {
+                "id": post_id,
+                "title": post_title,
+                "url": url_for(post_endpoint, slug=post_slug),
+                "published_at": post_data.get("published_at"),
+            }
+        )
+
+    # Sort related posts from newest to oldest.
+    related_posts.sort(
+        key=lambda post: post.get("published_at") or "",
+        reverse=True,
+    )
+
     return {
         "id": project["id"],
         "slug": project.get("slug", {}).get(language_key),
@@ -145,6 +186,7 @@ def get_project_details(project: dict, language: str) -> dict:
         "cover_caption": project.get("cover_caption", {}).get(language_key),
         "links": project.get("links", {}),
         "content_html": markdown_renderer.render(markdown_content),
+        "related_posts": related_posts,
     }
 
 

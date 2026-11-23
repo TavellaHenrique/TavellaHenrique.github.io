@@ -1811,3 +1811,34 @@ button:focus-visible {
     font-size: 0.9rem;
     text-align: center;
 }
+
+/* Related blog posts on project detail pages */
+.project-related-posts {
+    max-width: 850px;
+    margin: 3rem auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.project-related-posts h2 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.project-related-posts ul {
+    padding-left: 1.5rem;
+}
+
+.project-related-posts li {
+    margin-block: 0.75rem;
+}
+
+.project-related-posts a {
+    color: var(--foreground);
+    text-decoration-color: var(--accent);
+    text-underline-offset: 4px;
+}
+
+.project-related-posts a:hover {
+    color: var(--accent);
+}

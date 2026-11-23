@@ -50,6 +50,27 @@
         {{ project.content_html | safe }}
     </div>
 
+    {% if project.related_posts %}
+        <section
+            class="project-related-posts"
+            aria-labelledby="project-related-posts-title"
+        >
+            <h2 id="project-related-posts-title">
+                {{ site_text.projects.related_posts }}
+            </h2>
+
+            <ul>
+                {% for related_post in project.related_posts %}
+                    <li>
+                        <a href="{{ related_post.url }}">
+                            {{ related_post.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </section>
+    {% endif %}
+
     {% if project.links.github or project.links.demo %}
         <section class="project-detail-links" aria-label="{{ site_text.projects.project_links }}">
             {% if project.links.github %}

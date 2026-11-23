@@ -888,3 +888,141 @@ def test_blog_pagination_controls_are_rendered(
     assert 'id="blog-pagination-next"' in html
     assert expected_previous in html
     assert expected_next in html
+
+
+def test_project_detail_displays_related_post(client, monkeypatch):
+    """Verify project details display posts linked through related_project_id."""
+    from app.routes import content_loader
+
+    project = make_project()
+    post = make_post()
+    post["related_project_id"] = project["id"]
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: "",
+    )
+
+    response = client.get("/projects/test-project/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Related articles" in html
+    assert "Test Article" in html
+    assert 'href="/blog/test-post/"' in html
+
+
+def test_project_detail_displays_posts_from_related_post_ids(
+    client,
+    monkeypatch,
+):
+    """Verify project details display posts listed in related_post_ids."""
+    from app.routes import content_loader
+
+    project = make_project()
+    project["related_post_ids"] = ["test-post"]
+
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: "",
+    )
+
+    response = client.get("/projects/test-project/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Test Article" in html
+    assert 'href="/blog/test-post/"' in html
+
+
+def test_project_detail_displays_related_post_in_portuguese(
+    client,
+    monkeypatch,
+):
+    """Verify related posts use localized titles and URLs."""
+    from app.routes import content_loader
+
+    project = make_project()
+    post = make_post()
+    post["related_project_id"] = project["id"]
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: "",
+    )
+
+    response = client.get("/pt-br/projetos/projeto-teste/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Artigos relacionados" in html
+    assert "Artigo de Teste" in html
+    assert 'href="/pt-br/blog/artigo-teste/"' in html
+
+
+def test_project_detail_hides_related_posts_when_empty(
+    client,
+    monkeypatch,
+):
+    """Verify the related posts section is hidden when no posts match."""
+    from app.routes import content_loader
+
+    project = make_project()
+    post = make_post()
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_projects",
+        lambda: [project],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [post],
+    )
+    monkeypatch.setattr(
+        content_loader,
+        "load_project_markdown",
+        lambda project, language: "",
+    )
+
+    response = client.get("/projects/test-project/")
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "project-related-posts" not in html
