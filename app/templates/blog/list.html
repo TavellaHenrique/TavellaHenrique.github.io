@@ -50,6 +50,35 @@
             data-no-results="{{ site_text.blog.search_no_results }}"
             data-results="{{ site_text.blog.search_results }}"
         ></p>
+
+        <nav
+            id="blog-pagination"
+            class="blog-pagination"
+            aria-label="{{ site_text.blog.pagination_label }}"
+            hidden
+        >
+            <button
+                type="button"
+                id="blog-pagination-previous"
+                disabled
+            >
+                {{ site_text.blog.previous_page }}
+            </button>
+
+            <span
+                id="blog-pagination-status"
+                aria-live="polite"
+                data-page-status="{{ site_text.blog.page_status }}"
+            ></span>
+
+            <button
+                type="button"
+                id="blog-pagination-next"
+                disabled
+            >
+                {{ site_text.blog.next_page }}
+            </button>
+        </nav>
     {% endif %}
 
     {% include "blog/_post_cards.html" %}

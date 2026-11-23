@@ -44,7 +44,11 @@
     "all_tags": "All tags",
     "clear_filters": "Clear filters",
     "search_no_results": "No articles match your search.",
-    "search_results": "{count} articles found"
+    "search_results": "{count} articles found",
+    "pagination_label": "Article pagination",
+    "previous_page": "Previous page",
+    "next_page": "Next page",
+    "page_status": "Page {current} of {total}"
   },
   "footer": {
     "signature": "<< Allevat >>",

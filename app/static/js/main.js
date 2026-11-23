@@ -156,6 +156,14 @@ const blogEmptyState = document.querySelector("#blog-empty-state");
 const blogPostCards = Array.from(
     document.querySelectorAll(".blog-post-card[data-search-index]")
 );
+const blogPagination = document.querySelector("#blog-pagination");
+const blogPaginationPrevious = document.querySelector(
+    "#blog-pagination-previous"
+);
+const blogPaginationNext = document.querySelector("#blog-pagination-next");
+const blogPaginationStatus = document.querySelector(
+    "#blog-pagination-status"
+);
 
 // Normalize text for case-insensitive and accent-insensitive searching.
 function normalizeSearchText(value) {
@@ -175,6 +183,10 @@ if (
     blogPostCards.length > 0
 ) {
     const blogSearchContainer = blogSearch.closest(".blog-search-controls");
+
+    // Configure the number of articles displayed per page.
+    const blogPageSize = 6;
+    let blogCurrentPage = 1;
 
     // Collect unique tags from the rendered article cards.
     const availableTags = new Set();
@@ -199,14 +211,12 @@ if (
             blogTagFilter.appendChild(option);
         });
 
-    // Filter cards based on the search query and selected tag.
+    // Filter and paginate blog posts based on the current search and tag.
     function filterBlogPosts() {
         const searchQuery = normalizeSearchText(blogSearch.value);
         const selectedTag = blogTagFilter.value;
 
-        let visibleCount = 0;
-
-        blogPostCards.forEach((card) => {
+        const matchingCards = blogPostCards.filter((card) => {
             const searchIndex = normalizeSearchText(
                 card.dataset.searchIndex || ""
             );
@@ -216,50 +226,112 @@ if (
             ).map((tagLink) => normalizeSearchText(tagLink.textContent));
 
             const matchesSearch = searchIndex.includes(searchQuery);
-            const matchesTag =
-                !selectedTag || cardTags.includes(selectedTag);
+            const matchesTag = !selectedTag || cardTags.includes(selectedTag);
 
-            const isVisible = matchesSearch && matchesTag;
-
-            card.hidden = !isVisible;
-
-            if (isVisible) {
-                visibleCount += 1;
-            }
+            return matchesSearch && matchesTag;
         });
 
-        // Show the empty state when no cards match the current filters.
+        const totalResults = matchingCards.length;
+        const totalPages = Math.ceil(totalResults / blogPageSize);
+
+        // Keep the current page within the available range.
+        blogCurrentPage = Math.max(
+            1,
+            Math.min(blogCurrentPage, totalPages || 1)
+        );
+
+        const startIndex = (blogCurrentPage - 1) * blogPageSize;
+        const endIndex = startIndex + blogPageSize;
+        const currentPageCards = matchingCards.slice(startIndex, endIndex);
+
+        // Hide all cards before showing the current page.
+        blogPostCards.forEach((card) => {
+            card.hidden = true;
+        });
+
+        currentPageCards.forEach((card) => {
+            card.hidden = false;
+        });
+
+        // Update the empty state.
         if (blogEmptyState) {
-            blogEmptyState.hidden = visibleCount > 0;
-            blogEmptyState.textContent =
-                blogSearchResults.dataset.noResults;
+            blogEmptyState.hidden = totalResults > 0;
         }
 
-        // Announce the number of matching articles to assistive technology.
+        // Update the total matching article count.
         blogSearchResults.textContent =
-            visibleCount === 0
+            totalResults === 0
                 ? blogSearchResults.dataset.noResults
                 : blogSearchResults.dataset.results.replace(
                     "{count}",
-                    visibleCount
+                    totalResults
                 );
+
+        // Show pagination only when multiple pages are available.
+        if (blogPagination) {
+            blogPagination.hidden = totalPages <= 1;
+        }
+
+        if (blogPaginationPrevious) {
+            blogPaginationPrevious.disabled = blogCurrentPage <= 1;
+        }
+
+        if (blogPaginationNext) {
+            blogPaginationNext.disabled =
+                blogCurrentPage >= totalPages;
+        }
+
+        // Update the current page indicator.
+        if (blogPaginationStatus && totalPages > 0) {
+            blogPaginationStatus.textContent =
+                blogPaginationStatus.dataset.pageStatus
+                    .replace("{current}", blogCurrentPage)
+                    .replace("{total}", totalPages);
+        }
     }
 
     // Clear the search query and tag filter.
     function resetBlogFilters() {
         blogSearch.value = "";
         blogTagFilter.value = "";
-
-        filterBlogPosts();
+        blogCurrentPage = 1;
 
         blogSearch.focus();
+
+        filterBlogPosts();
     }
 
-    // Update results while typing or changing the selected tag.
-    blogSearch.addEventListener("input", filterBlogPosts);
-    blogTagFilter.addEventListener("change", filterBlogPosts);
-    blogSearchReset.addEventListener("click", resetBlogFilters);
+    // Reset pagination when the search query changes.
+    blogSearch.addEventListener("input", () => {
+        blogCurrentPage = 1;
+        filterBlogPosts();
+    });
 
-    // Initialize the result count.
+    // Reset pagination when the selected tag changes.
+    blogTagFilter.addEventListener("change", () => {
+        blogCurrentPage = 1;
+        filterBlogPosts();
+    });
+
+    // Navigate to the previous page.
+    blogPaginationPrevious?.addEventListener("click", () => {
+        if (blogCurrentPage > 1) {
+            blogCurrentPage -= 1;
+            filterBlogPosts();
+        }
+    });
+
+    // Navigate to the next page.
+    blogPaginationNext?.addEventListener("click", () => {
+        blogCurrentPage += 1;
+        filterBlogPosts();
+    });
+
+    // Clear all filters and return to the first page.
+    blogSearchReset.addEventListener("click", () => {
+        resetBlogFilters()
+    });
+
+    // Initialize the result count and pagination.
     filterBlogPosts();
 }

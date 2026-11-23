@@ -44,7 +44,11 @@
     "all_tags": "Todas as tags",
     "clear_filters": "Limpar filtros",
     "search_no_results": "Nenhum artigo corresponde à sua busca.",
-    "search_results": "{count} artigos encontrados"
+    "search_results": "{count} artigos encontrados",
+    "pagination_label": "Paginação dos artigos",
+    "previous_page": "Página anterior",
+    "next_page": "Próxima página",
+    "page_status": "Página {current} de {total}"
   },
   "footer": {
     "signature": "<< Allevat >>",

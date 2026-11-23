@@ -854,3 +854,37 @@ def test_blog_post_cards_include_search_index(client, monkeypatch):
     assert "data-search-index=" in html
     assert "Test Article" in html
     assert "Test article description." in html
+
+
+@pytest.mark.parametrize(
+    ("route", "expected_previous", "expected_next"),
+    [
+        ("/blog/", "Previous page", "Next page"),
+        ("/pt-br/blog/", "Página anterior", "Próxima página"),
+    ],
+)
+def test_blog_pagination_controls_are_rendered(
+    client,
+    monkeypatch,
+    route,
+    expected_previous,
+    expected_next,
+):
+    """Verify pagination controls are rendered in both languages."""
+    from app.routes import content_loader
+
+    monkeypatch.setattr(
+        content_loader,
+        "load_posts",
+        lambda include_drafts=False: [make_post()],
+    )
+
+    response = client.get(route)
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert 'id="blog-pagination"' in html
+    assert 'id="blog-pagination-previous"' in html
+    assert 'id="blog-pagination-next"' in html
+    assert expected_previous in html
+    assert expected_next in html
