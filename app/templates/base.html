@@ -4,18 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="{{ content.site.description }}">
+    <!-- SEO metadata -->
+    <meta
+        name="description"
+        content="{{ meta_description | default(content.site.description) }}"
+    >
     <meta name="author" content="{{ content.site.author }}">
 
-    <title>{{ content.site.title }}</title>
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    <!-- Alternate language versions -->
+    <link
+        rel="alternate"
+        hreflang="en"
+        href="{{ alternate_language_urls['en'] }}"
+    >
+    <link
+        rel="alternate"
+        hreflang="pt-BR"
+        href="{{ alternate_language_urls['pt-br'] }}"
+    >
+    <link
+        rel="alternate"
+        hreflang="x-default"
+        href="{{ alternate_language_urls['en'] }}"
+    >
+
+    <title>{{ meta_title | default(content.site.title) }}</title>
+
+    <!-- Open Graph metadata -->
+    <meta property="og:title" content="{{ meta_title | default(content.site.title) }}">
+    <meta
+        property="og:description"
+        content="{{ meta_description | default(content.site.description) }}"
+    >
+    <meta property="og:type" content="{{ og_type | default('website') }}">
+    <meta property="og:site_name" content="{{ content.site.brand }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:image" content="{{ og_image }}">
+
+    <!-- Twitter Card metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ meta_title | default(content.site.title) }}">
+    <meta
+        name="twitter:description"
+        content="{{ meta_description | default(content.site.description) }}"
+    >
+    <meta name="twitter:image" content="{{ og_image }}">
 
     <!-- Load the portfolio typography from Google Fonts. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+    <script
+        src="{{ url_for('static', filename='js/main.js') }}"
+        defer
+    ></script>
 </head>
 <body>
     <header class="site-header">

@@ -31,16 +31,41 @@ LANGUAGE_ROUTES = {
     },
 }
 
+# Define localized site names for browser and search engine titles.
+SEO_SITE_NAMES = {
+    "en": {
+        "portfolio": "Henrique's Portfolio",
+        "blog": "Henrique's Blog",
+    },
+    "pt-br": {
+        "portfolio": "Portfólio de Henrique",
+        "blog": "Blog de Henrique",
+    },
+}
+
+
+def build_page_title(language: str, section: str, title: str) -> str:
+    """Build a localized SEO title using the site name and page title."""
+    language_key = "pt-br" if language == "pt-br" else "en"
+    site_name = SEO_SITE_NAMES[language_key][section]
+
+    return f"{site_name} | {title}"
+
 
 def render_page(
     language: str,
     page: str,
     template: str = "pages/placeholder.html",
     extra_context: dict | None = None,
+    metadata: dict | None = None,
+    title_section: str = "portfolio",
 ):
-    """Render a page with its language, navigation and alternate-language URL."""
+    """Render a page with localized content and SEO metadata."""
     localized_content = CONTENT["en" if language == "en" else "pt-br"]
     site_text = content_loader.load_site_text(language)
+
+    # Load global site settings.
+    site_settings = content_loader.load_site_settings()
 
     alternate_language = "pt-br" if language == "en" else "en"
     alternate_endpoint = LANGUAGE_ROUTES[alternate_language][page]
@@ -49,6 +74,28 @@ def render_page(
         "en": url_for(LANGUAGE_ROUTES["en"][page]),
         "pt-br": url_for(LANGUAGE_ROUTES["pt-br"][page]),
     }
+
+    # Build absolute URLs for each language version.
+    site_url = site_settings["site_url"].rstrip("/")
+    absolute_language_urls = {
+        language_code: f"{site_url}{path}" for language_code, path in language_urls.items()
+    }
+
+    # Define default metadata for the current page.
+    page_metadata = {
+        "meta_title": build_page_title(
+            language,
+            title_section,
+            site_text["navigation"][page],
+        ),
+        "meta_description": localized_content["site"]["description"],
+        "og_type": "website",
+        # Define the default social sharing image.
+        "og_image": (f"{site_url}{url_for('static', filename='images/og-image-home.png')}"),
+    }
+
+    # Allow individual routes to override the default metadata.
+    page_metadata.update(metadata or {})
 
     # Build the template context and allow page-specific overrides.
     context = {
@@ -59,6 +106,11 @@ def render_page(
         "alternate_url": url_for(alternate_endpoint),
         "language_urls": language_urls,
         "LANGUAGE_ROUTES": LANGUAGE_ROUTES,
+        "site_settings": site_settings,
+        "site_url": site_settings["site_url"],
+        "canonical_url": absolute_language_urls[language],
+        "alternate_language_urls": absolute_language_urls,
+        **page_metadata,
     }
 
     context.update(extra_context or {})
@@ -376,6 +428,16 @@ def project_detail(slug: str):
             "project": project,
             "language_urls": language_urls,
         },
+        metadata={
+            "meta_title": build_page_title(
+                "en",
+                "portfolio",
+                project["title"],
+            ),
+            "meta_description": project["description"],
+            "og_type": "article",
+            "og_image": project["cover_image"],
+        },
     )
 
 
@@ -408,6 +470,16 @@ def project_detail_pt_br(slug: str):
             "project": project,
             "language_urls": language_urls,
         },
+        metadata={
+            "meta_title": build_page_title(
+                "pt-br",
+                "portfolio",
+                project["title"],
+            ),
+            "meta_description": project["description"],
+            "og_type": "article",
+            "og_image": project["cover_image"],
+        },
     )
 
 
@@ -419,6 +491,10 @@ def blog():
         "blog",
         "blog/list.html",
         extra_context={"posts": get_localized_posts("en")},
+        metadata={
+            "meta_title": build_page_title("en", "blog", "Home"),
+        },
+        title_section="blog",
     )
 
 
@@ -430,6 +506,10 @@ def blog_pt_br():
         "blog",
         "blog/list.html",
         extra_context={"posts": get_localized_posts("pt-br")},
+        metadata={
+            "meta_title": build_page_title("pt-br", "blog", "Início"),
+        },
+        title_section="blog",
     )
 
 
@@ -451,6 +531,10 @@ def blog_tag(tag: str):
         "blog",
         "blog/tag.html",
         extra_context={"tag": tag, "posts": posts, "language_urls": language_urls},
+        metadata={
+            "meta_title": build_page_title("en", "blog", tag),
+        },
+        title_section="blog",
     )
 
 
@@ -472,6 +556,10 @@ def blog_tag_pt_br(tag: str):
         "blog",
         "blog/tag.html",
         extra_context={"tag": tag, "posts": posts, "language_urls": language_urls},
+        metadata={
+            "meta_title": build_page_title("pt-br", "blog", tag),
+        },
+        title_section="blog",
     )
 
 
@@ -503,6 +591,17 @@ def post_detail(slug: str):
             "post": post,
             "language_urls": language_urls,
         },
+        metadata={
+            "meta_title": build_page_title(
+                "en",
+                "blog",
+                post["title"],
+            ),
+            "meta_description": post["description"],
+            "og_type": "article",
+            "og_image": post["cover_image"],
+        },
+        title_section="blog",
     )
 
 
@@ -532,6 +631,17 @@ def post_detail_pt_br(slug: str):
             "post": post,
             "language_urls": language_urls,
         },
+        metadata={
+            "meta_title": build_page_title(
+                "pt-br",
+                "blog",
+                post["title"],
+            ),
+            "meta_description": post["description"],
+            "og_type": "article",
+            "og_image": post["cover_image"],
+        },
+        title_section="blog",
     )
 
 

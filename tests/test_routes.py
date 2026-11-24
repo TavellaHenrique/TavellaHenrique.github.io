@@ -1026,3 +1026,194 @@ def test_project_detail_hides_related_posts_when_empty(
 
     assert response.status_code == 200
     assert "project-related-posts" not in html
+
+
+def test_render_page_provides_default_metadata(client, monkeypatch):
+    """Verify render_page provides default SEO metadata."""
+    from app import routes
+
+    # Provide synthetic localized content.
+    monkeypatch.setattr(
+        routes,
+        "SEO_SITE_NAMES",
+        {
+            "en": {
+                "portfolio": "Synthetic Portfolio",
+                "blog": "Synthetic Blog",
+            },
+            "pt-br": {
+                "portfolio": "Portfólio Sintético",
+                "blog": "Blog Sintético",
+            },
+        },
+    )
+
+    # Provide synthetic localized content.
+    monkeypatch.setattr(
+        routes,
+        "CONTENT",
+        {
+            "en": {
+                "site": {
+                    "description": "Synthetic site description.",
+                },
+            },
+            "pt-br": {
+                "site": {
+                    "description": "Descrição sintética do site.",
+                },
+            },
+        },
+    )
+
+    # Provide synthetic global site settings.
+    monkeypatch.setattr(
+        routes.content_loader,
+        "load_site_settings",
+        lambda: {
+            "site_name": "Synthetic Site",
+            "site_url": "https://example.test",
+            "default_language": "en",
+            "supported_languages": ["en", "pt-br"],
+            "home": {
+                "featured_project_ids": [],
+                "featured_project_count": 3,
+                "recent_post_count": 3,
+            },
+            "theme": {
+                "default": "system",
+                "available": ["light", "dark"],
+            },
+            "content": {
+                "projects_directory": "projects",
+                "posts_directory": "posts",
+            },
+        },
+    )
+
+    monkeypatch.setattr(
+        routes.content_loader,
+        "load_site_text",
+        lambda language: {
+            "navigation": {
+                "home": "Synthetic Home",
+                "projects": "Synthetic Projects",
+                "blog": "Synthetic Blog",
+                "about": "Synthetic About",
+            }
+        },
+    )
+
+    # Capture the context passed to the template renderer.
+    rendered_context = {}
+
+    def fake_render_template(template, **context):
+        rendered_context.update(context)
+        return "rendered"
+
+    monkeypatch.setattr(routes, "render_template", fake_render_template)
+
+    app = client.application
+
+    with app.test_request_context("/"):
+        result = routes.render_page("en", "home")
+
+    assert result == "rendered"
+    assert rendered_context["meta_title"] == "Synthetic Portfolio | Synthetic Home"
+    assert rendered_context["meta_description"] == "Synthetic site description."
+    assert rendered_context["og_type"] == "website"
+
+    # Verify canonical and alternate language URLs.
+    assert rendered_context["canonical_url"] == (
+        f"https://example.test{rendered_context['language_urls']['en']}"
+    )
+
+    assert rendered_context["alternate_language_urls"]["en"] == (
+        f"https://example.test{rendered_context['language_urls']['en']}"
+    )
+
+    assert rendered_context["alternate_language_urls"]["pt-br"] == (
+        f"https://example.test{rendered_context['language_urls']['pt-br']}"
+    )
+
+    # Verify the default social sharing image.
+    assert rendered_context["og_image"].startswith("https://example.test/")
+    assert rendered_context["og_image"].endswith("/static/images/og-image-home.png")
+
+
+def test_render_page_overrides_metadata_and_preserves_extra_context(
+    client,
+    monkeypatch,
+):
+    """Verify custom metadata and additional context are preserved."""
+    from app import routes
+
+    # Provide synthetic localized content.
+    monkeypatch.setattr(
+        routes,
+        "CONTENT",
+        {
+            "en": {"site": {"description": "Default description."}},
+            "pt-br": {"site": {"description": "Descrição padrão."}},
+        },
+    )
+
+    monkeypatch.setattr(
+        routes.content_loader,
+        "load_site_text",
+        lambda language: {
+            "navigation": {
+                "home": "Home",
+                "projects": "Projects",
+                "blog": "Blog",
+                "about": "About",
+            }
+        },
+    )
+
+    # Capture the template context without rendering the actual template.
+    rendered_context = {}
+
+    def fake_render_template(template, **context):
+        rendered_context.update(context)
+        return "rendered"
+
+    monkeypatch.setattr(routes, "render_template", fake_render_template)
+
+    custom_metadata = {
+        "meta_title": "Synthetic Article Title",
+        "meta_description": "Synthetic article description.",
+        "og_type": "article",
+        "og_image": "images/synthetic-cover.png",
+    }
+
+    extra_context = {
+        "article": {"id": "synthetic-article"},
+        "custom_value": "preserved",
+    }
+
+    app = client.application
+
+    with app.test_request_context("/"):
+        result = routes.render_page(
+            language="en",
+            page="blog",
+            metadata=custom_metadata,
+            extra_context=extra_context,
+        )
+
+    assert result == "rendered"
+
+    # Verify the metadata overrides.
+    assert rendered_context["meta_title"] == "Synthetic Article Title"
+    assert rendered_context["meta_description"] == "Synthetic article description."
+    assert rendered_context["og_type"] == "article"
+    assert rendered_context["og_image"] == "images/synthetic-cover.png"
+
+    # Verify additional context is preserved.
+    assert rendered_context["article"] == {"id": "synthetic-article"}
+    assert rendered_context["custom_value"] == "preserved"
+
+    # Verify unrelated default context remains available.
+    assert rendered_context["content"]["site"]["description"] == "Default description."
+    assert rendered_context["current_page"] == "blog"

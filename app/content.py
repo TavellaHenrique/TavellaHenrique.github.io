@@ -4,9 +4,9 @@ CONTENT = {
         "alternate_language": "PT-BR",
         "language_toggle_endpoint": "main.index_pt_br",
         "site": {
-            "brand": "<< Allevat >>",
+            "brand": "<< Allevathings >>",
             "title": "Henrique Tavella | Portfolio",
-            "description": "Henrique Tavella — Developer Portfolio",
+            "description": "Portfolio and blog",
             "author": "Henrique Ribeiro da Cunha Tavella",
         },
         "accessibility": {
@@ -142,7 +142,7 @@ CONTENT = {
         "site": {
             "brand": "<< Allevat >>",
             "title": "Henrique Tavella | Portfólio",
-            "description": "Portfólio de Henrique Tavella",
+            "description": "Portfólio e blog",
             "author": "Henrique Ribeiro da Cunha Tavella",
         },
         "accessibility": {

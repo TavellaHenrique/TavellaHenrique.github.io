@@ -1,5 +1,6 @@
 {
   "site_name": "Allevat",
+  "site_url": "https://tavellahenrique.github.io",
   "default_language": "en",
   "supported_languages": ["en", "pt-br"],
   "home": {
