@@ -71,6 +71,10 @@
     ></script>
 </head>
 <body>
+    <a class="skip-link" href="#main-content">
+        {{ content.accessibility.skip_to_content }}
+    </a>
+
     <header class="site-header">
         <a
             class="logo"
@@ -101,11 +105,10 @@
                     class="language-toggle"
                     type="button"
                     aria-label="{{ content.accessibility.language_selector }}"
-                    aria-haspopup="listbox"
                     aria-expanded="false"
                     aria-controls="language-options"
                 >
-                    <span class="language-toggle-label" aria-live="polite">
+                    <span class="language-toggle-label">
                         {{ "PT-BR" if content.language == "pt-BR" else "EN" }}
                     </span>
                     <svg
@@ -121,15 +124,12 @@
                 <ul
                     class="language-menu"
                     id="language-options"
-                    role="listbox"
                     aria-label="{{ content.accessibility.language_selector }}"
                 >
                     <li>
                         <a
                             class="language-option {% if content.language == 'pt-BR' %}is-selected{% endif %}"
                             href="{{ language_urls['pt-br'] }}"
-                            role="option"
-                            aria-selected="{{ 'true' if content.language == 'pt-BR' else 'false' }}"
                             data-lang="pt-br"
                             data-value="PT-BR"
                         >
@@ -141,8 +141,6 @@
                         <a
                             class="language-option {% if content.language != 'pt-BR' %}is-selected{% endif %}"
                             href="{{ language_urls['en'] }}"
-                            role="option"
-                            aria-selected="{{ 'true' if content.language != 'pt-BR' else 'false' }}"
                             data-lang="en"
                             data-value="EN"
                         >
@@ -164,7 +162,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         {% block content %}{% endblock %}
     </main>
 

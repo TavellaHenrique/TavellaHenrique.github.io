@@ -14,6 +14,7 @@ CONTENT = {
             "main_navigation": "Main navigation",
             "language_selector": "Select language",
             "theme_toggle": "Toggle color theme",
+            "skip_to_content": "Skip to content"
         },
         "navigation": {
             "home": "Home",
@@ -150,6 +151,7 @@ CONTENT = {
             "main_navigation": "Navegação principal",
             "language_selector": "Selecionar idioma",
             "theme_toggle": "Alternar tema de cores",
+            "skip_to_content": "Pular para o conteúdo"
         },
         "navigation": {
             "home": "Início",
