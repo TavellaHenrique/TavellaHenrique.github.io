@@ -1,5 +1,5 @@
 {
-  "title": "Henrique Tavella | Portfolio",
+  "title": "Portfolio",
   "description": "Portfolio and blog",
   "navigation": {
     "home": "Home",
@@ -52,7 +52,7 @@
     "page_status": "Page {current} of {total}"
   },
   "footer": {
-    "signature": "<< Allevat >>",
+    "signature": "<< Allevathings >>",
     "copyright": "© {year} Henrique Tavella"
   }
 }

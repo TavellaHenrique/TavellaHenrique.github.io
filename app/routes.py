@@ -34,12 +34,12 @@ LANGUAGE_ROUTES = {
 # Define localized site names for browser and search engine titles.
 SEO_SITE_NAMES = {
     "en": {
-        "portfolio": "Henrique's Portfolio",
-        "blog": "Henrique's Blog",
+        "portfolio": "Allevathings Portfolio",
+        "blog": "Allevathings Blog",
     },
     "pt-br": {
-        "portfolio": "Portfólio de Henrique",
-        "blog": "Blog de Henrique",
+        "portfolio": "Allevathings Portfólio",
+        "blog": "Allevathings Blog",
     },
 }
 

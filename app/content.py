@@ -5,12 +5,12 @@ CONTENT = {
         "language_toggle_endpoint": "main.index_pt_br",
         "site": {
             "brand": "<< Allevathings >>",
-            "title": "Henrique Tavella | Portfolio",
+            "title": "Allevathings",
             "description": "Portfolio and blog",
             "author": "Henrique Ribeiro da Cunha Tavella",
         },
         "accessibility": {
-            "home_link": "Henrique Tavella - Home",
+            "home_link": "Allevathings - Home",
             "main_navigation": "Main navigation",
             "language_selector": "Select language",
             "theme_toggle": "Toggle color theme",
@@ -23,7 +23,7 @@ CONTENT = {
             "contact": "Contact",
         },
         "hero": {
-            "note": "Hey, I'm",
+            "note": "Hey, I am",
             "first_name": "Henrique",
             "last_name": "Tavella",
             "role": "About Systems Development",
@@ -129,7 +129,6 @@ CONTENT = {
                     "external": True,
                 },
             ],
-            "signature": "<< Allevat >>",
         },
         "footer": {
             "copyright": "© {year} Henrique Tavella",
@@ -141,13 +140,13 @@ CONTENT = {
         "alternate_language": "EN",
         "language_toggle_endpoint": "main.index",
         "site": {
-            "brand": "<< Allevat >>",
-            "title": "Henrique Tavella | Portfólio",
+            "brand": "<< Allevathings >>",
+            "title": "Allevathings",
             "description": "Portfólio e blog",
             "author": "Henrique Ribeiro da Cunha Tavella",
         },
         "accessibility": {
-            "home_link": "Henrique Tavella - Início",
+            "home_link": "Allevathings - Início",
             "main_navigation": "Navegação principal",
             "language_selector": "Selecionar idioma",
             "theme_toggle": "Alternar tema de cores",
@@ -267,7 +266,6 @@ CONTENT = {
                     "external": True,
                 },
             ],
-            "signature": "<< Allevat >>",
         },
         "footer": {
             "copyright": "© {year} Henrique Tavella",
