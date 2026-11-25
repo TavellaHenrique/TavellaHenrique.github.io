@@ -9,7 +9,16 @@ const languageOptions = Array.from(
 const rootElement = document.documentElement;
 
 // Restore the saved theme or use light mode by default.
-const savedTheme = localStorage.getItem("portfolio-theme");
+// Read the saved theme safely when storage is available.
+function getSavedTheme() {
+    try {
+        return localStorage.getItem("portfolio-theme");
+    } catch {
+        return null;
+    }
+}
+
+const savedTheme = getSavedTheme();
 const initialTheme = savedTheme === "dark" ? "dark" : "light";
 
 // Apply the initial theme.
@@ -21,20 +30,30 @@ function updateTheme(theme) {
 
     const isDark = theme === "dark";
 
-    themeToggle.setAttribute("aria-pressed", String(isDark));
-    localStorage.setItem("portfolio-theme", theme);
+    // Update the theme button's accessibility state when it exists.
+    if (themeToggle) {
+        themeToggle.setAttribute("aria-pressed", String(isDark));
+    }
+    // Save the theme preference when storage is available.
+    try {
+        localStorage.setItem("portfolio-theme", theme);
+    } catch {
+        // Continue without persistence if storage is unavailable.
+    }
 }
 
 // Initialize the theme control.
 updateTheme(initialTheme);
 
-// Switch themes when the control is clicked.
-themeToggle.addEventListener("click", () => {
-    const nextTheme =
-        rootElement.dataset.theme === "dark" ? "light" : "dark";
+// Switch themes when the control is available.
+if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+        const nextTheme =
+            rootElement.dataset.theme === "dark" ? "light" : "dark";
 
-    updateTheme(nextTheme);
-});
+        updateTheme(nextTheme);
+    });
+}
 
 // Initialize the language picker when its elements are available.
 if (languagePicker && languageToggle && languageMenu) {
@@ -182,8 +201,6 @@ if (
     blogSearchResults &&
     blogPostCards.length > 0
 ) {
-    const blogSearchContainer = blogSearch.closest(".blog-search-controls");
-
     // Configure the number of articles displayed per page.
     const blogPageSize = 6;
     let blogCurrentPage = 1;
@@ -329,7 +346,7 @@ if (
 
     // Clear all filters and return to the first page.
     blogSearchReset.addEventListener("click", () => {
-        resetBlogFilters()
+        resetBlogFilters();
     });
 
     // Initialize the result count and pagination.
