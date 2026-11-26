@@ -1210,17 +1210,27 @@ button:focus-visible {
     border: 1px solid var(--border);
     border-radius: 12px;
     background-color: var(--background);
+    transition: 0.2s ease all;
 }
 
 .blog-post-card:hover {
     background-color: var(--surface);
+    border-color: var(--accent);
+    transform: translateY(-2px);
 }
 
 .blog-post-cover {
     display: block;
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
+    object-fit: fill;
+    padding: 10px;
+    border-bottom: 1px solid inherit;
+    opacity: 75%;
+}
+
+.blog-post-card:hover .blog-post-cover {
+    opacity: 100%;
 }
 
 .blog-post-card-content {
