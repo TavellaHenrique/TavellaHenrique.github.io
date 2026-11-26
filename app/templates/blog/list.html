@@ -19,9 +19,6 @@
                     placeholder="{{ site_text.blog.search_placeholder }}"
                     autocomplete="off"
                 >
-                <p class="blog-search-language-notice">
-                    {{ site_text.blog.search_language_notice }}
-                </p>
             </div>
 
             <div class="blog-filter-field">
@@ -40,7 +37,13 @@
             >
                 {{ site_text.blog.clear_filters }}
             </button>
+
+            <p class="blog-search-language-notice">
+                {{ site_text.blog.search_language_notice }}
+            </p>
         </div>
+
+        
 
         <p
             id="blog-search-results"
