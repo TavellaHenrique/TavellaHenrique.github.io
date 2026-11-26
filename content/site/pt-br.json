@@ -53,7 +53,8 @@
   },
   "footer": {
     "signature": "<< Allevathings >>",
-    "copyright": "© {year} Henrique Tavella"
+    "copyright": "© {year} Henrique Tavella",
+    "contacts_label": "Contato"
   },
   "about": {
     "intro": "Conheça um pouco sobre mim, minha trajetória nos estudos, o que me motiva a desenvolver sistemas e os objetivos que busco alcançar."

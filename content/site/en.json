@@ -53,7 +53,8 @@
   },
   "footer": {
     "signature": "<< Allevathings >>",
-    "copyright": "© {year} Henrique Tavella"
+    "copyright": "© {year} Henrique Tavella",
+    "contacts_label": "Contact"
   },
   "about": {
     "intro": "Learn a little about me, my educational background, what motivates me to develop software, and the goals I hope to achieve."

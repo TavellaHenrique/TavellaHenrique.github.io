@@ -168,6 +168,13 @@
 
     <footer class="site-footer">
         <p>{{ content.footer.copyright.format(year=content.footer.year) }}</p>
+        <nav class="footer-contacts" aria-label="{{ site_text.footer.contacts_label }}">
+            {% for link in profile.links %}
+                <a href="{{ link.url }}"{% if link.url.startswith('https://') %} target="_blank" rel="noopener noreferrer"{% endif %}>
+                    {{ link.label }}
+                </a>
+            {% endfor %}
+        </nav>
         <a
             class="logo"
             href="{{ url_for('main.index') if content.language == 'en' else url_for('main.index_pt_br') }}"
