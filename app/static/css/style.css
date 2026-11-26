@@ -827,8 +827,10 @@ button:focus-visible {
     align-items: center;
     gap: 8px;
     margin-bottom: 35px;
-    color: var(--muted);
+    color: var(--foreground);
     font-size: 0.85rem;
+    text-decoration: underline var(--accent);
+    text-underline-offset: 4px;
 }
 
 .project-back-link:hover {
@@ -1319,7 +1321,12 @@ button:focus-visible {
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 2rem;
-    text-decoration: none;
+    color: var(--foreground);
+    text-decoration: underline var(--accent);
+    text-underline-offset: 4px;
+}
+.blog-post-back-link:hover {
+    color: var(--accent);
 }
 
 .blog-post-detail-header {
@@ -1422,12 +1429,14 @@ button:focus-visible {
 }
 
 .blog-post-detail-footer a {
-    text-decoration: none;
+    text-decoration: underline var(--accent);
+    text-underline-offset: 4px;
+    color: var(--foreground);
     font-weight: 600;
 }
 
 .blog-post-detail-footer a:hover {
-    text-decoration: underline;
+    color: var(--accent);
 }
 
 /* Blog search and filters */
