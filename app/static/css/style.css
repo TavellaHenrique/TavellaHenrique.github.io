@@ -685,7 +685,8 @@ button:focus-visible {
 }
 
 .project-list-card:hover {
-    border-top: 4px solid var(--accent);
+    border-top: 2px solid var(--accent);
+    transform: translateY(-2px);
     background-color: var(--surface);
     transition: 0.2s ease;
 }
