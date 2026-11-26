@@ -358,13 +358,6 @@ def get_post_details(post: dict, language: str) -> dict:
     }
 
 
-def get_posts_by_tag(tag: str, language: str) -> list[dict]:
-    """Return localized published posts associated with a tag."""
-    posts = get_localized_posts(language)
-
-    return [post for post in posts if tag in post.get("tags", [])]
-
-
 @main.route("/")
 def index():
     """Render the English homepage."""
@@ -508,56 +501,6 @@ def blog_pt_br():
         extra_context={"posts": get_localized_posts("pt-br")},
         metadata={
             "meta_title": build_page_title("pt-br", "blog", "Início"),
-        },
-        title_section="blog",
-    )
-
-
-@main.route("/blog/tags/<tag>/")
-def blog_tag(tag: str):
-    """Display English posts filtered by tag."""
-    posts = get_posts_by_tag(tag, "en")
-
-    if not posts:
-        abort(404)
-
-    language_urls = {
-        "en": (url_for("main.blog_tag", tag=tag) if posts else url_for("main.blog")),
-        "pt-br": url_for("main.blog_tag_pt_br", tag=tag),
-    }
-
-    return render_page(
-        "en",
-        "blog",
-        "blog/tag.html",
-        extra_context={"tag": tag, "posts": posts, "language_urls": language_urls},
-        metadata={
-            "meta_title": build_page_title("en", "blog", tag),
-        },
-        title_section="blog",
-    )
-
-
-@main.route("/pt-br/blog/tags/<tag>/")
-def blog_tag_pt_br(tag: str):
-    """Display Portuguese posts filtered by tag."""
-    posts = get_posts_by_tag(tag, "pt-br")
-
-    if not posts:
-        abort(404)
-
-    language_urls = {
-        "en": url_for("main.blog_tag", tag=tag),
-        "pt-br": (url_for("main.blog_tag_pt_br", tag=tag) if posts else url_for("main.blog_pt_br")),
-    }
-
-    return render_page(
-        "pt-br",
-        "blog",
-        "blog/tag.html",
-        extra_context={"tag": tag, "posts": posts, "language_urls": language_urls},
-        metadata={
-            "meta_title": build_page_title("pt-br", "blog", tag),
         },
         title_section="blog",
     )

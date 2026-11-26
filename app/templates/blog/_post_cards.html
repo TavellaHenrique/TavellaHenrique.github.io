@@ -42,13 +42,7 @@
                     {% if post.tags %}
                         <ul class="blog-post-tags" aria-label="{{ site_text.blog.tags }}">
                             {% for post_tag in post.tags %}
-                                <li>
-                                    <a
-                                        href="{{ url_for('main.blog_tag', tag=post_tag) if content.language == 'en' else url_for('main.blog_tag_pt_br', tag=post_tag) }}"
-                                    >
-                                        {{ post_tag }}
-                                    </a>
-                                </li>
+                                <li>{{ post_tag }}</li>
                             {% endfor %}
                         </ul>
                     {% endif %}

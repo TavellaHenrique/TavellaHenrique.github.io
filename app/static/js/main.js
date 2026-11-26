@@ -209,8 +209,8 @@ if (
     const availableTags = new Set();
 
     blogPostCards.forEach((card) => {
-        card.querySelectorAll(".blog-post-tags a").forEach((tagLink) => {
-            availableTags.add(tagLink.textContent.trim());
+        card.querySelectorAll(".blog-post-tags li").forEach((tagItem) => {
+            availableTags.add(tagItem.textContent.trim());
         });
     });
 
@@ -239,8 +239,8 @@ if (
             );
 
             const cardTags = Array.from(
-                card.querySelectorAll(".blog-post-tags a")
-            ).map((tagLink) => normalizeSearchText(tagLink.textContent));
+                card.querySelectorAll(".blog-post-tags li")
+            ).map((tagItem) => normalizeSearchText(tagItem.textContent));
 
             const matchesSearch = searchIndex.includes(searchQuery);
             const matchesTag = !selectedTag || cardTags.includes(selectedTag);
