@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from flask import Blueprint, abort, render_template, url_for
+from flask import Blueprint, abort, render_template, request, url_for
 
 from app.content import CONTENT
 from app.services.content_loader import ContentLoader
@@ -14,6 +14,14 @@ main = Blueprint("main", __name__)
 CONTENT_ROOT = Path(__file__).resolve().parents[1] / "content"
 content_loader = ContentLoader(CONTENT_ROOT)
 markdown_renderer = MarkdownRenderer()
+
+
+@main.app_context_processor
+def inject_profile():
+    """Make the localized profile available to all templates."""
+    language = "pt-br" if request.path.startswith("/pt-br/") else "en"
+    return {"profile": content_loader.load_profile(language)}
+
 
 # Map each page to its equivalent route in the other language.
 LANGUAGE_ROUTES = {
@@ -595,7 +603,6 @@ def about():
         "en",
         "about",
         "pages/about.html",
-        extra_context={"profile": content_loader.load_profile("en")},
     )
 
 
@@ -606,5 +613,4 @@ def about_pt_br():
         "pt-br",
         "about",
         "pages/about.html",
-        extra_context={"profile": content_loader.load_profile("pt-br")},
     )
