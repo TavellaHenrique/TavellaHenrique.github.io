@@ -112,6 +112,29 @@ def test_localized_routes_return_success(client, route):
     assert response.status_code == 200
 
 
+@pytest.mark.parametrize(
+    ("route", "expected_hero", "expected_reason_heading", "expected_current_school"),
+    [
+        ("/about/", "Henrique Tavella", "The technology industry", "Fatec Campinas"),
+        ("/pt-br/sobre/", "Henrique Tavella", "O mercado de tecnologia", "Fatec Campinas"),
+    ],
+)
+def test_about_pages_render_localized_profile_sections(
+    client, route, expected_hero, expected_reason_heading, expected_current_school
+):
+    """Verify localized About pages render the profile and education sections."""
+    response = client.get(route)
+    html = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert expected_hero in html
+    assert expected_reason_heading in html
+    assert expected_current_school in html
+    assert "education-current" in html
+    assert "about-reason-card" in html
+    assert html.count("about-reason-card") >= 4
+
+
 def test_localized_homepages_render(client):
     """Verify both localized homepages render successfully."""
     for route in ("/", "/pt-br/"):

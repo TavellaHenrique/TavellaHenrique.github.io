@@ -2,19 +2,110 @@
   "name": "Henrique Tavella",
   "full_name": "Henrique Ribeiro da Cunha Tavella",
   "presentation": "Software development is a path: a way to help people by giving their ideas the opportunity to become something real.",
-  "education": [],
+  "education": [
+    {
+      "period": "2022-2024",
+      "title": "Technical Diploma in Systems Development",
+      "institution": "Etec João Belarmino",
+      "location": "Amparo, São Paulo, Brazil",
+      "current": false
+    },
+    {
+      "period": "2025-Now",
+      "title": "Associate Degree in Systems Analysis and Development",
+      "institution": "Fatec Campinas",
+      "location": "Campinas, São Paulo, Brazil",
+      "current": true
+    }
+  ],
   "skills": [
-    {"name": "Web Development", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
-    {"name": "Desktop Development", "technologies": ["Java", "Python", "C#"]},
-    {"name": "Mobile Development", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
-    {"name": "Databases", "technologies": ["MySQL", "SQLite"]},
-    {"name": "Tools", "technologies": ["Git", "GitHub", "VS Code"]}
+    {
+      "name": "Web Development",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP"
+      ]
+    },
+    {
+      "name": "Desktop Development",
+      "technologies": [
+        "Java",
+        "Python",
+        "C#"
+      ]
+    },
+    {
+      "name": "Mobile Development",
+      "technologies": [
+        "Java",
+        "Kotlin",
+        "Dart",
+        "Flutter"
+      ]
+    },
+    {
+      "name": "Databases",
+      "technologies": [
+        "MySQL",
+        "SQLite"
+      ]
+    },
+    {
+      "name": "Tools",
+      "technologies": [
+        "Git",
+        "GitHub",
+        "VS Code"
+      ]
+    }
   ],
   "professional_objectives": [],
   "avatar": null,
   "links": [
-    {"label": "Email", "url": "mailto:henriquetavella0@gmail.com"},
-    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
-    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
-  ]
+    {
+      "label": "Email",
+      "url": "mailto:henriquetavella0@gmail.com"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/TavellaHenrique/"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/tavellahenrique/"
+    }
+  ],
+  "page_intro": "Learn a little about me, my educational background, what motivates me to develop software, and the goals I hope to achieve.",
+  "hero_title": "Henrique Tavella",
+  "hero_subtitle": "A developer drawn to cool projects (like this website) and challenges (like designing this website).",
+  "about_title": "About me",
+  "about_paragraphs": [
+    "I'm someone who enjoys understanding how things work, exploring ideas, and discovering new possibilities. I've always been interested in technology and its ability to turn something that starts as an idea into something tangible.",
+    "I'm currently studying Systems Analysis and Development and building my programming journey through coursework, personal projects, and experimentation. I enjoy learning by doing, tackling challenges, and discovering different ways to solve problems.",
+    "I believe software development goes beyond writing code. It also involves understanding needs, thinking through solutions, and creating something that can be useful to others. That possibility is what motivates me to keep learning and exploring this field."
+  ],
+  "trajectory_title": "My journey",
+  "reasons_title": "Why I chose systems development",
+  "reasons": [
+    {
+      "title": "The technology industry",
+      "text": "The technology industry has been growing for years, and I believe it will continue to offer new possibilities. This growth also brings its characteristic competitiveness, which I try to approach with focus, dedication, and continuous learning."
+    },
+    {
+      "title": "Development as a process",
+      "text": "I enjoy creating things and do not mind dedicating time to make them good. That is why I value the process as much as the result: every step, decision, and improvement is part of building something."
+    },
+    {
+      "title": "Software as an objective",
+      "text": "Although software is intangible, it can be measured, tested, and evaluated objectively. This motivates me to pursue quality, improve solutions, and always try to achieve a better result."
+    },
+    {
+      "title": "The intersection with other fields",
+      "text": "Software development has its own extensive and constantly evolving universe, but that is not the only thing that attracts me. Technology also helps bring ideas from other fields to life. Developing software exposes us to knowledge, approaches, and perspectives we might not otherwise encounter. I find that diversity very interesting."
+    }
+  ],
+  "goals_title": "What I'm looking for",
+  "goals_text": "Although I've been studying systems development for some time, I haven't yet had my first professional experience in the field. At this point, I'm looking for an internship or an entry-level position where I can apply my knowledge, learn from others, and begin building my professional career."
 }

@@ -590,11 +590,21 @@ def post_detail_pt_br(slug: str):
 
 @main.route("/about/")
 def about():
-    """Render the English about page placeholder."""
-    return render_page("en", "about")
+    """Render the localized English about page."""
+    return render_page(
+        "en",
+        "about",
+        "pages/about.html",
+        extra_context={"profile": content_loader.load_profile("en")},
+    )
 
 
 @main.route("/pt-br/sobre/")
 def about_pt_br():
-    """Render the Brazilian Portuguese about page placeholder."""
-    return render_page("pt-br", "about")
+    """Render the Brazilian Portuguese about page."""
+    return render_page(
+        "pt-br",
+        "about",
+        "pages/about.html",
+        extra_context={"profile": content_loader.load_profile("pt-br")},
+    )

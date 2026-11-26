@@ -54,5 +54,8 @@
   "footer": {
     "signature": "<< Allevathings >>",
     "copyright": "© {year} Henrique Tavella"
+  },
+  "about": {
+    "intro": "Learn a little about me, my educational background, what motivates me to develop software, and the goals I hope to achieve."
   }
 }

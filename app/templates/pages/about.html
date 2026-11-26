@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="about-page section-container" aria-labelledby="about-page-title">
+    <header class="about-page-header">
+        <h1 id="about-page-title">{{ page_title }}</h1>
+        <p>{{ profile.page_intro }}</p>
+    </header>
+
+    <section class="about-hero" aria-labelledby="about-hero-title">
+        <h2 id="about-hero-title">{{ profile.hero_title }}</h2>
+        <p>{{ profile.hero_subtitle }}</p>
+    </section>
+
+    <section class="about-section" aria-labelledby="about-intro-title">
+        <h2 id="about-intro-title">{{ profile.about_title }}</h2>
+        {% for paragraph in profile.about_paragraphs %}
+            <p>{{ paragraph }}</p>
+        {% endfor %}
+    </section>
+
+    <section class="about-section" aria-labelledby="about-trajectory-title">
+        <h2 id="about-trajectory-title">{{ profile.trajectory_title }}</h2>
+        <ol class="education-timeline">
+            {% for education in profile.education %}
+                <li class="education-timeline-item{% if education.current %} education-current{% endif %}">
+                    <div class="education-timeline-marker" aria-hidden="true"></div>
+                    <article class="education-timeline-card">
+                        <p class="education-period">{{ education.period }}</p>
+                        <h3>{{ education.title }}</h3>
+                        <p class="education-institution">{{ education.institution }}</p>
+                        <p class="education-location">{{ education.location }}</p>
+                    </article>
+                </li>
+            {% endfor %}
+        </ol>
+    </section>
+
+    <section class="about-section" aria-labelledby="about-reasons-title">
+        <h2 id="about-reasons-title">{{ profile.reasons_title }}</h2>
+        <div class="about-reasons-grid">
+            {% for reason in profile.reasons %}
+                <article class="about-reason-card">
+                    <h3>{{ reason.title }}</h3>
+                    <p>{{ reason.text }}</p>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="about-section about-goals" aria-labelledby="about-goals-title">
+        <h2 id="about-goals-title">{{ profile.goals_title }}</h2>
+        <p>{{ profile.goals_text }}</p>
+    </section>
+</section>
+{% endblock %}

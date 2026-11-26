@@ -2,19 +2,110 @@
   "name": "Henrique Tavella",
   "full_name": "Henrique Ribeiro da Cunha Tavella",
   "presentation": "Para mim, o desenvolvimento de software é um caminho: uma forma de ajudar pessoas, dando às suas ideias a oportunidade de se tornarem realidade.",
-  "education": [],
+  "education": [
+    {
+      "period": "2022 - 2024",
+      "title": "Ensino Técnico em Desenvolvimento de Sistemas",
+      "institution": "Etec João Belarmino",
+      "location": "Amparo, SP",
+      "current": false
+    },
+    {
+      "period": "2025 - Previsão de conclusão em 2027",
+      "title": "Tecnologia em Análise e Desenvolvimento de Sistemas",
+      "institution": "Fatec Campinas",
+      "location": "Campinas, SP",
+      "current": true
+    }
+  ],
   "skills": [
-    {"name": "Desenvolvimento Web", "technologies": ["HTML", "CSS", "JavaScript", "PHP"]},
-    {"name": "Desenvolvimento para Desktop", "technologies": ["Java", "Python", "C#"]},
-    {"name": "Desenvolvimento Mobile", "technologies": ["Java", "Kotlin", "Dart", "Flutter"]},
-    {"name": "Bancos de Dados", "technologies": ["MySQL", "SQLite"]},
-    {"name": "Ferramentas", "technologies": ["Git", "GitHub", "VS Code"]}
+    {
+      "name": "Desenvolvimento Web",
+      "technologies": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "PHP"
+      ]
+    },
+    {
+      "name": "Desenvolvimento para Desktop",
+      "technologies": [
+        "Java",
+        "Python",
+        "C#"
+      ]
+    },
+    {
+      "name": "Desenvolvimento Mobile",
+      "technologies": [
+        "Java",
+        "Kotlin",
+        "Dart",
+        "Flutter"
+      ]
+    },
+    {
+      "name": "Bancos de Dados",
+      "technologies": [
+        "MySQL",
+        "SQLite"
+      ]
+    },
+    {
+      "name": "Ferramentas",
+      "technologies": [
+        "Git",
+        "GitHub",
+        "VS Code"
+      ]
+    }
   ],
   "professional_objectives": [],
   "avatar": null,
   "links": [
-    {"label": "E-mail", "url": "mailto:henriquetavella0@gmail.com"},
-    {"label": "GitHub", "url": "https://github.com/TavellaHenrique/"},
-    {"label": "LinkedIn", "url": "https://www.linkedin.com/in/tavellahenrique/"}
-  ]
+    {
+      "label": "E-mail",
+      "url": "mailto:henriquetavella0@gmail.com"
+    },
+    {
+      "label": "GitHub",
+      "url": "https://github.com/TavellaHenrique/"
+    },
+    {
+      "label": "LinkedIn",
+      "url": "https://www.linkedin.com/in/tavellahenrique/"
+    }
+  ],
+  "page_intro": "Conheça um pouco sobre mim, minha trajetória nos estudos, o que me motiva a desenvolver sistemas e os objetivos que busco alcançar.",
+  "hero_title": "Henrique Tavella",
+  "hero_subtitle": "Desenvolvedor atraído por projetos legais (como este site) e desafios (como fazer o design deste site).",
+  "about_title": "Sobre mim",
+  "about_paragraphs": [
+    "Sou alguém que gosta de entender como as coisas funcionam, explorar ideias e descobrir novas possibilidades. Sempre me interessei por tecnologia e pela capacidade que ela tem de transformar algo que começa apenas como uma ideia em algo concreto.",
+    "Atualmente, curso Análise e Desenvolvimento de Sistemas e venho construindo minha trajetória na programação por meio dos estudos, projetos próprios e experimentação. Gosto de aprender na prática, enfrentar desafios e descobrir diferentes maneiras de resolver um problema.",
+    "Acredito que desenvolver software vai além de escrever código. É também entender necessidades, pensar em soluções e criar algo que possa ser útil para outras pessoas. É essa possibilidade que me motiva a continuar aprendendo e explorando a área."
+  ],
+  "trajectory_title": "Minha trajetória",
+  "reasons_title": "Por que escolhi desenvolver sistemas",
+  "reasons": [
+    {
+      "title": "O mercado de tecnologia",
+      "text": "A área de tecnologia cresce há anos e acredito que continuará oferecendo novas possibilidades. Esse crescimento também traz uma competitividade característica, mas procuro encará-la com foco, dedicação e estudo constante."
+    },
+    {
+      "title": "O desenvolvimento como processo",
+      "text": "Gosto de criar coisas e não me importo em dedicar tempo para que elas fiquem boas. Por isso, dou tanta atenção ao processo quanto ao resultado: cada etapa, decisão e melhoria faz parte da construção."
+    },
+    {
+      "title": "Software como objetivo",
+      "text": "Apesar de um software ser intangível, ele pode ser medido, testado e avaliado de forma objetiva. Essa característica me incentiva a buscar qualidade, aprimorar soluções e sempre tentar alcançar um resultado melhor."
+    },
+    {
+      "title": "A intersecção com outras áreas",
+      "text": "O desenvolvimento de sistemas possui um universo próprio, extenso e em constante evolução, mas não é apenas isso o que me atrai. A tecnologia serve como meio para concretizar ideias de outras áreas, e participar disso é ser exposto a conhecimento, abordagens e perspectivas que eu talvez não encontrasse de outra forma."
+    }
+  ],
+  "goals_title": "O que busco",
+  "goals_text": "Apesar de estudar desenvolvimento de sistemas há algum tempo, ainda não tive minha primeira experiência profissional na área. Neste momento, busco uma oportunidade de estágio ou uma posição de entrada que me permita aplicar meus conhecimentos, aprender com outras pessoas e começar a construir minha trajetória profissional."
 }
